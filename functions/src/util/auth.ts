@@ -2,7 +2,13 @@ import { addNewToken, getUserTokens } from './storage';
 import { Request, Response } from 'firebase-functions';
 
 export type Token = string;
-export type User = { id: string; };
+export type User = {
+    LastName: string;
+    EmailAddress: string;
+    Gender: 'M' | 'F',
+    ContactNumber: string,
+    FirstName: string;
+};
 export type TokenStorage = { [name: string]: Token; };
 
 export const authenticateRequest = async (req: Request, res: Response): Promise<string | undefined> => {
@@ -35,10 +41,10 @@ export const authenticateRequest = async (req: Request, res: Response): Promise<
     return;
 };
 
-export const createUserToken = async (user: User): Promise<Token> => {
+export const createUserToken = async (userId: string): Promise<Token> => {
     const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
     try {
-        await addNewToken(user.id, token);
+        await addNewToken(userId, token);
         return token;
     } catch (e) {
         throw new Error('Could not add token to database');

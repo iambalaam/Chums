@@ -23,5 +23,14 @@ export const getUserTokens = async (): Promise<TokenStorage> => {
 
 // User utilities
 export const getUserById = (userId: string) => {
-
+    return db.collection('Members')
+        .get()
+        .then((querySnapshot) => {
+            const userDoc = querySnapshot.docs.filter((doc) => doc.id === userId)[0];
+            if (userDoc) {
+                return userDoc.data();
+            } else {
+                return;
+            }
+        });
 };
