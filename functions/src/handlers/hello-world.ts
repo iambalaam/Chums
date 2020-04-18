@@ -15,7 +15,8 @@ const getTokenForFunction = async (functionName: string) => {
             METADATA_SERVER_TOKEN_URL + receivingFunctionURL,
             { headers: { 'Metadata-Flavor': 'Google' } }
         );
-        return response;
+        const text = await response.text();
+        return text;
     } catch (e) {
         return e;
     }
