@@ -8,5 +8,4 @@ export const helloWorld = functions.https.onRequest(async (req, res) => {
     } else {
         res.sendStatus(403);
     }
-
 });
