@@ -1,8 +1,35 @@
 import { addNewToken, getUserTokens } from './storage';
+import { Request, Response } from 'firebase-functions';
 
 export type Token = string;
 export type User = { name: string; };
 export type TokenStorage = { [name: string]: Token; };
+
+export const authenticateRequest = async (req: Request, res: Response): Promise<string | undefined> => {
+    // Does the user have a new token?
+    const queryStringToken = req.query.token;
+    if (typeof queryStringToken === 'string') {
+        const username = await authenticateUser(queryStringToken);
+        if (username) {
+            res.setHeader('Set-Cookie', `token=${queryStringToken}`);
+            return username;
+        }
+    }
+
+    // Does the user have a cookie?
+    const cookies = req.headers.cookie!.split('; ');
+    const cookieToken = cookies
+        .map((cookie) => cookie.split('='))
+        .filter(([key, value]) => key === 'token')[0][1];
+    if (cookieToken) {
+        const username = await authenticateUser(cookieToken);
+        if (username) {
+            return username;
+        }
+    }
+    // Not authenticated
+    return;
+};
 
 export const createUserToken = async (user: User): Promise<Token> => {
     const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
@@ -23,5 +50,4 @@ export const authenticateUser = async (token: Token): Promise<string | undefined
     } else {
         return;
     }
-
-}; 
+};
