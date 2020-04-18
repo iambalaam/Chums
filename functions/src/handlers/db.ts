@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 
 export const db = functions.https.onRequest((req, res) => {
-    res.send(req.path);
+    const [, operation] = req.path.slice(1).split('/');
+    res.send(operation);
 });
