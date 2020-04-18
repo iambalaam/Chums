@@ -1,0 +1,10 @@
+{
+  "name": "chums-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "Guy Balaam <guybal@amazon.com>",
+  "license": "MIT",
+  "dependencies": {
+    "firebase-tools": "^8.0.3"
+  }
+}
