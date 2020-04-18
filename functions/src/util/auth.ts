@@ -17,16 +17,20 @@ export const authenticateRequest = async (req: Request, res: Response): Promise<
     }
 
     // Does the user have a cookie?
-    const cookies = req.headers.cookie!.split('; ');
-    const cookieToken = cookies
-        .map((cookie) => cookie.split('='))
-        .filter(([key, value]) => key === 'token')[0][1];
-    if (cookieToken) {
-        const username = await authenticateUser(cookieToken);
-        if (username) {
-            return username;
+    const cookieHeader = req.headers.cookie;
+    if (cookieHeader) {
+        const cookies = cookieHeader.split('; ');
+        const cookieToken = cookies
+            .map((cookie) => cookie.split('='))
+            .filter(([key, value]) => key === 'token')[0][1];
+        if (cookieToken) {
+            const username = await authenticateUser(cookieToken);
+            if (username) {
+                return username;
+            }
         }
     }
+
     // Not authenticated
     return;
 };
