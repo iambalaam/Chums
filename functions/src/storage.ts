@@ -1,9 +1,0 @@
-import * as admin from 'firebase-admin';
-import * as functions from 'firebase-functions';
-
-admin.initializeApp(functions.config().firebase);
-
-const db = admin.firestore();
-
-export const set = (data: any) => db.collection('test-collection').doc('test-doc').set(data);
-export const get = () => db.collection('test-collection').doc('test-doc').get();
