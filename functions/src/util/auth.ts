@@ -1,5 +1,4 @@
 import { getAuthToken, AuthToken } from './storage';
-// import { Request, Response } from 'firebase-functions';
 
 export type Token = string;
 export type User = {
@@ -10,34 +9,31 @@ export type User = {
     FirstName: string;
 };
 
-export const validateEmailTokens = async (emailTokens: string[]): Promise<{ [emailToken: string]: AuthToken; }> => {
+export const validateEmailTokens = async (emailTokens: string[]): Promise<AuthToken[]> => {
     console.log(`Validating email tokens: [${emailTokens.join(', ')}]`);
     const authTokenPromises = emailTokens.map((emailToken) => getAuthToken(emailToken));
     const authTokens = await Promise.all(authTokenPromises);
-    console.log(`Got auth tokens: [${authTokens.map((t) => t.DateAndTimeOfGame).join(', ')}]`);
+    console.log(`Got auth tokens: [${authTokens}`);
 
     // check we have at least one token
-    const token = authTokens[0];
-    if (!token) {
+    if (authTokens.length === 0) {
         throw new Error('No auth tokens present');
     }
 
+    // Check all tokens are valid
+    for (let i = 0; i < authTokens.length; i++) {
+        if (!authTokens[i]) {
+            throw new Error(`Failed to get auth token for ${emailTokens[i]}`);
+        }
+    }
+
     // check tokens are for the same user
+    const token = authTokens[0];
     for (const authToken of authTokens) {
-        if (authToken.MemberId !== token.MemberId) {
+        if (authToken!.MemberId !== token!.MemberId) {
             throw new Error('Tokens are for multiple members');
         }
     }
 
-    const keyedAuthTokens: { [emailToken: string]: AuthToken; } = {};
-    for (let i = 0; i < emailTokens.length; i++) {
-        keyedAuthTokens[emailTokens[i]] = authTokens[i];
-    }
-
-    return keyedAuthTokens;
-};
-
-export const authenticateUser = async (token: Token): Promise<AuthToken | undefined> => {
-    const data = await getAuthToken(token);
-    return data;
+    return authTokens as AuthToken[];
 };

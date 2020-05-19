@@ -34,7 +34,7 @@ export interface Player {
     Position: null;
 }
 
-export const getAuthToken = async (token: string): Promise<AuthToken> => {
+export const getAuthToken = async (token: string): Promise<AuthToken | undefined> => {
     const data = await db
         .collection('EmailAuthTokens')
         .doc(token)
@@ -43,7 +43,7 @@ export const getAuthToken = async (token: string): Promise<AuthToken> => {
     return data;
 };
 
-export const getMember = async (memberId: string): Promise<Member> => {
+export const getMember = async (memberId: string): Promise<Member | undefined> => {
     const data = await db
         .collection('Members')
         .doc(memberId)
@@ -64,4 +64,29 @@ export const getUserById = (userId: string) => {
                 return;
             }
         });
+};
+
+export const getPlayer = async (playerId: string): Promise<Player | undefined> => {
+    const data = db.collection('Players')
+        .doc(playerId)
+        .get()
+        .then((doc) => doc.data() as Player);
+    return data;
+};
+
+export const storePlayer = async (playerId: string, player: Player) => {
+    return db.collection('Players')
+        .doc(playerId)
+        .set(player);
+};
+
+export type DataUpdateStatus = 'Exists' | 'Stored' | 'Failed';
+export const getOrStorePlayer = async (playerId: string, player: Player): Promise<DataUpdateStatus> => {
+    const storedPlayed = await getPlayer(playerId);
+    if (storedPlayed) {
+        return 'Exists';
+    } else {
+        await storePlayer(playerId, player);
+        return 'Stored';
+    }
 };
