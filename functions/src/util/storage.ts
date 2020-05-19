@@ -4,20 +4,51 @@ import * as functions from 'firebase-functions';
 admin.initializeApp(functions.config().firebase);
 const db = admin.firestore();
 
-// Authentication token storage
-interface TokenStorage {
-    [token: string]: string;
-}
-export const addNewToken = (userId: string, token: string) => {
-    return db.collection('auth')
-        .doc('user-tokens')
-        .update({ [token]: userId });
+export type FirebaseTimestamp = {
+    _seconds: number,
+    _nanoseconds: number;
 };
-export const getUserTokens = async (): Promise<TokenStorage> => {
-    const data = await db.collection('auth')
-        .doc('user-tokens')
+
+// Authentication token storage
+export interface AuthToken {
+    MemberId: string,
+    ExipryDate: FirebaseTimestamp;
+    DateAndTimeOfGame: FirebaseTimestamp;
+}
+
+export interface Member {
+    ContactNumber: string;
+    EmailAddress: string;
+    FirstName: string;
+    Gender: 'M' | 'F';
+    LastName: string;
+}
+
+export interface Player {
+    CourtNumber: number;
+    DateAndTimeOfGame: FirebaseTimestamp;
+    EmailAddress: string;
+    FirstName: string;
+    LastName: string;
+    GameWeek: number;
+    Position: null;
+}
+
+export const getAuthToken = async (token: string): Promise<AuthToken> => {
+    const data = await db
+        .collection('EmailAuthTokens')
+        .doc(token)
         .get()
-        .then((doc) => doc.data() as TokenStorage);
+        .then((doc) => doc.data() as AuthToken);
+    return data;
+};
+
+export const getMember = async (memberId: string): Promise<Member> => {
+    const data = await db
+        .collection('Members')
+        .doc(memberId)
+        .get()
+        .then((doc) => doc.data() as Member);
     return data;
 };
 

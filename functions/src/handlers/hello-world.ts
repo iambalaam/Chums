@@ -1,13 +1,27 @@
 import * as functions from 'firebase-functions';
-import { authenticateRequest } from '../util/auth';
-import { getUserById } from '../util/storage';
+import { getMember, Player } from '../util/storage';
+import { validateEmailTokens } from '../util/auth';
+import { constructPlayer } from '../util/players';
 
 export const helloWorld = functions.https.onRequest(async (req, res) => {
-    const userId = await authenticateRequest(req, res);
-    if (userId) {
-        const users = await getUserById(userId);
-        res.status(200).send(users);
-    } else {
-        res.sendStatus(403);
+    try {
+        const emailTokens = Object.entries(req.body)
+            .filter(([_emailToken, toggle]) => toggle === 'on')
+            .map(([emailToken, _toggle]) => emailToken);
+        const keyedAuthTokens = await validateEmailTokens(emailTokens);
+
+        const member = await getMember(keyedAuthTokens[emailTokens[0]].MemberId);
+
+        const keyedPlayers: { [id: string]: Player; } = {};
+        Object.entries(keyedAuthTokens).forEach(([key, authToken]) => {
+            keyedPlayers[key] = constructPlayer(member, authToken);
+        });
+        res.send(`<pre>${JSON.stringify(keyedPlayers, null, 4)}</pre>`);
+    } catch (err) {
+        if (err instanceof Error && err.stack) {
+            res.send(err.stack);
+        } else {
+            res.send(err);
+        }
     }
 });

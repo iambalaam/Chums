@@ -1,5 +1,5 @@
-import { addNewToken, getUserTokens } from './storage';
-import { Request, Response } from 'firebase-functions';
+import { getAuthToken, AuthToken } from './storage';
+// import { Request, Response } from 'firebase-functions';
 
 export type Token = string;
 export type User = {
@@ -9,55 +9,35 @@ export type User = {
     ContactNumber: string,
     FirstName: string;
 };
-export type TokenStorage = { [name: string]: Token; };
 
-export const authenticateRequest = async (req: Request, res: Response): Promise<string | undefined> => {
-    // Does the user have a new token?
-    const queryStringToken = req.query.token;
-    if (typeof queryStringToken === 'string') {
-        const userId = await authenticateUser(queryStringToken);
-        if (userId) {
-            res.setHeader('Set-Cookie', `token=${queryStringToken}`);
-            return userId;
+export const validateEmailTokens = async (emailTokens: string[]): Promise<{ [emailToken: string]: AuthToken; }> => {
+    console.log(`Validating email tokens: [${emailTokens.join(', ')}]`);
+    const authTokenPromises = emailTokens.map((emailToken) => getAuthToken(emailToken));
+    const authTokens = await Promise.all(authTokenPromises);
+    console.log(`Got auth tokens: [${authTokens.map((t) => t.DateAndTimeOfGame).join(', ')}]`);
+
+    // check we have at least one token
+    const token = authTokens[0];
+    if (!token) {
+        throw new Error('No auth tokens present');
+    }
+
+    // check tokens are for the same user
+    for (const authToken of authTokens) {
+        if (authToken.MemberId !== token.MemberId) {
+            throw new Error('Tokens are for multiple members');
         }
     }
 
-    // Does the user have a cookie?
-    const cookieHeader = req.headers.cookie;
-    if (cookieHeader) {
-        const cookies = cookieHeader.split('; ');
-        const cookieToken = cookies
-            .map((cookie) => cookie.split('='))
-            .filter(([key, value]) => key === 'token')[0][1];
-        if (cookieToken) {
-            const userId = await authenticateUser(cookieToken);
-            if (userId) {
-                return userId;
-            }
-        }
+    const keyedAuthTokens: { [emailToken: string]: AuthToken; } = {};
+    for (let i = 0; i < emailTokens.length; i++) {
+        keyedAuthTokens[emailTokens[i]] = authTokens[i];
     }
 
-    // Not authenticated
-    return;
+    return keyedAuthTokens;
 };
 
-export const createUserToken = async (userId: string): Promise<Token> => {
-    const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-    try {
-        await addNewToken(userId, token);
-        return token;
-    } catch (e) {
-        throw new Error('Could not add token to database');
-    }
-};
-
-export const authenticateUser = async (token: Token): Promise<string | undefined> => {
-    const data = await getUserTokens();
-    const matches = Object.entries(data)
-        .filter(([t, n]) => t === token);
-    if (matches.length > 0) {
-        return matches[0][1];
-    } else {
-        return;
-    }
+export const authenticateUser = async (token: Token): Promise<AuthToken | undefined> => {
+    const data = await getAuthToken(token);
+    return data;
 };
