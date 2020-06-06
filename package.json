@@ -9,6 +9,7 @@
     "npm-run-all": "^4.1.5"
   },
   "scripts": {
+    "start": "webpack-dev-server --config web/webpack.config.js",
     "clean:static": "mkdir -p static && rm -rf static/*",
     "copy:dist": "cp -R web/dist/* static",
     "copy:public": "cp -R web/public/* static",
@@ -19,6 +20,7 @@
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
     "css-loader": "^3.5.3",
+    "html-webpack-plugin": "^4.3.0",
     "mini-css-extract-plugin": "^0.9.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -26,6 +28,7 @@
     "ts-loader": "^7.0.5",
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.0"
   }
 }
