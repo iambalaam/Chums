@@ -1,1 +1,1 @@
-export * from './handlers/hello-world';
+export * from './handlers/api';

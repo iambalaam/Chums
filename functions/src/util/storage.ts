@@ -13,7 +13,6 @@ export type FirebaseTimestamp = {
 export interface AuthToken {
     MemberId: string,
     ExipryDate: FirebaseTimestamp;
-    DateAndTimeOfGame: FirebaseTimestamp;
 }
 
 export interface Member {
@@ -89,4 +88,26 @@ export const getOrStorePlayer = async (playerId: string, player: Player): Promis
         await storePlayer(playerId, player);
         return 'Stored';
     }
+};
+
+// Courts
+export interface Court {
+    DateAndTimeOfGame: FirebaseTimestamp,
+    CourtNumber: number,
+    GameWeek: number,
+    Locked: boolean,
+    Player1: null,
+    Player2: null,
+    Player3: null,
+    Player4: null;
+}
+export interface CourWithId extends Court {
+    id: string;
+}
+
+export const getCourts = async (): Promise<CourWithId[]> => {
+    const docRefs = await db.collection('Courts').listDocuments();
+    const docs = await Promise.all(docRefs.map((docRef) => docRef.get()));
+    const courts = docs.map((doc) => ({ ...doc.data() as Court, id: doc.id }));
+    return await courts;
 };

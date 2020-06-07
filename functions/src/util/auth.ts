@@ -1,4 +1,5 @@
-import { getAuthToken, AuthToken } from './storage';
+import * as functions from 'firebase-functions';
+import { getAuthToken, getMember } from './storage';
 
 export type Token = string;
 export type User = {
@@ -9,31 +10,42 @@ export type User = {
     FirstName: string;
 };
 
-export const validateEmailTokens = async (emailTokens: string[]): Promise<AuthToken[]> => {
-    console.log(`Validating email tokens: [${emailTokens.join(', ')}]`);
-    const authTokenPromises = emailTokens.map((emailToken) => getAuthToken(emailToken));
-    const authTokens = await Promise.all(authTokenPromises);
-    console.log(`Got auth tokens: [${authTokens}`);
+export const authMiddleware = async (req: functions.https.Request, res: functions.Response) => {
+    const queryToken = req.query && req.query.token;
+    const headerCookies = (req.headers.cookie || '')
+        .split('; ')
+        .filter((cookie) => cookie.startsWith('token='));
+    const cookieToken = (headerCookies[0] || '').slice(6);
 
-    // check we have at least one token
-    if (authTokens.length === 0) {
-        throw new Error('No auth tokens present');
-    }
-
-    // Check all tokens are valid
-    for (let i = 0; i < authTokens.length; i++) {
-        if (!authTokens[i]) {
-            throw new Error(`Failed to get auth token for ${emailTokens[i]}`);
+    if (typeof queryToken === 'string' && queryToken.length > 0) {
+        const queryAuthToken = await getAuthToken(queryToken);
+        if (queryAuthToken) {
+            res.setHeader('Set-Cookie', `token=${queryToken}`);
+            const member = getMember(queryAuthToken.MemberId);
+            if (member) {
+                res.locals.authToken = queryAuthToken;
+                res.locals.member = member;
+                return;
+            }
         }
+        console.warn(`invalid query auth token: ${queryToken}`);
+
     }
 
-    // check tokens are for the same user
-    const token = authTokens[0];
-    for (const authToken of authTokens) {
-        if (authToken!.MemberId !== token!.MemberId) {
-            throw new Error('Tokens are for multiple members');
+    if (typeof cookieToken === 'string' && cookieToken.length > 0) {
+        const cookieAuthToken = await getAuthToken(cookieToken);
+        if (cookieAuthToken) {
+            const member = await getMember(cookieAuthToken.MemberId);
+            if (member) {
+                res.locals.authToken = cookieAuthToken;
+                res.locals.member = member;
+            }
+            return;
         }
+        console.warn(`invalid cookie auth token: ${cookieToken}`);
+
     }
 
-    return authTokens as AuthToken[];
+    throw new Error('Could not authenticate request');
+
 };
