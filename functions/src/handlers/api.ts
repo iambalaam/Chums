@@ -4,14 +4,28 @@ import { getWeek } from '../util/datetime';
 import { authMiddleware } from '../util/auth';
 import { firestore } from 'firebase-admin';
 
+const ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+    'https://chums-tennis.web.app'
+];
+
 export const api = functions.https.onRequest(async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
+    const origin = req.headers.origin as string;
+    if (ALLOWED_ORIGINS.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
+
+
     try {
         // Perform authentication
         await authMiddleware(req, res);
 
         // Handle operation
         switch (req.path) {
+            case '/getMember':
+                return await getMember(req, res);
             case '/getCourts':
                 return await getCourts(req, res);
             case '/requestCourt':
@@ -20,6 +34,7 @@ export const api = functions.https.onRequest(async (req, res) => {
             default:
                 throw new Error('404');
         }
+
     } catch (err) {
         if (err instanceof Error) {
             return res.send({
@@ -32,6 +47,13 @@ export const api = functions.https.onRequest(async (req, res) => {
         }
     }
 });
+
+const getMember = async (_req: functions.https.Request, res: functions.Response) => {
+    return res.send({
+        memberId: (res.locals.authToken as AuthToken).MemberId,
+        member: (res.locals.member as Member)
+    });
+};
 
 const getCourts = async (req: functions.https.Request, res: functions.Response) => {
     if (req.method !== 'GET') throw new Error(`Cannot ${req.method} /api/getCourts`);

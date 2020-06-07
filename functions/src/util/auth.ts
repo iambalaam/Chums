@@ -21,7 +21,7 @@ export const authMiddleware = async (req: functions.https.Request, res: function
         const queryAuthToken = await getAuthToken(queryToken);
         if (queryAuthToken) {
             res.setHeader('Set-Cookie', `token=${queryToken}`);
-            const member = getMember(queryAuthToken.MemberId);
+            const member = await getMember(queryAuthToken.MemberId);
             if (member) {
                 res.locals.authToken = queryAuthToken;
                 res.locals.member = member;

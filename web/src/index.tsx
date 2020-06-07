@@ -1,34 +1,53 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import './index.css';
-import { Nav } from './nav';
+
 import { Member } from '../../functions/src/util/storage';
+
+import { getMember } from './api';
+import { Nav } from './nav';
+import './index.css';
 
 export interface AppState {
     member?: Member;
 }
 
-const mockMember: Member = {
-    ContactNumber: '',
-    EmailAddress: '',
-    FirstName: 'Guy',
-    LastName: 'Balaam',
-    Gender: 'M'
+const getToken = (): string | undefined => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const queryToken = searchParams.get('token');
+    if (queryToken) {
+        document.cookie = `token=${queryToken}`;
+        return queryToken;
+    } else {
+        const cookies = document.cookie.split('; ');
+        const cookieToken = cookies.find((cookie) => cookie.startsWith('token='));
+        return cookieToken;
+    }
 };
 
-class App extends React.Component<{}> {
+class App extends React.Component<{}, AppState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {};
+    }
+
     async componentDidMount() {
-        // fetch data
+        const token = getToken();
+        if (token) {
+            const data = await getMember(token) || {};
+            const member = data.member as Member;
+            this.setState({ member });
+        } else {
+            console.error('Could not authenticate');
+        }
     }
 
     render() {
         return (
             <div>
-                <Nav member={mockMember} />
+                <Nav member={this.state.member} />
             </div>
         );
     }
 }
-
 
 render(<App />, document.getElementById('root')!);
