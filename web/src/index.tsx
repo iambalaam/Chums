@@ -1,19 +1,34 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import './index.css';
-import { CalendarWithTime, CalendarProps } from './calendar';
+import { Nav } from './nav';
+import { Member } from '../../functions/src/util/storage';
 
-const mockProps: CalendarProps = {
-    date: new Date(),
-    status: {
-        color: '#5ccd5c',
-        message: '✔ Requested'
-    }
+export interface AppState {
+    member?: Member;
+}
+
+const mockMember: Member = {
+    ContactNumber: '',
+    EmailAddress: '',
+    FirstName: 'Guy',
+    LastName: 'Balaam',
+    Gender: 'M'
 };
 
-const App = () =>
-    <div>
-        <CalendarWithTime {...mockProps} />
-    </div>;
+class App extends React.Component<{}> {
+    async componentDidMount() {
+        // fetch data
+    }
+
+    render() {
+        return (
+            <div>
+                <Nav member={mockMember} />
+            </div>
+        );
+    }
+}
+
 
 render(<App />, document.getElementById('root')!);

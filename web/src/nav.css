@@ -1,0 +1,15 @@
+nav {
+    color: white;
+    height: 60px;
+    background-color: #05c793;
+    padding: 10px;
+    line-height: 40px;
+    font-size: 40px;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.2);
+}
+nav .member {
+    padding: 8px;
+    float: right;
+    line-height: 24px;
+    font-size: 24px;
+}
