@@ -19,8 +19,8 @@ const getToken = (): string | undefined => {
         return queryToken;
     } else {
         const cookies = document.cookie.split('; ');
-        const cookieToken = cookies.find((cookie) => cookie.startsWith('token='));
-        return cookieToken;
+        const cookieToken = cookies.find((cookie) => cookie.startsWith('token=')) || '';
+        return cookieToken.slice(6);
     }
 };
 
