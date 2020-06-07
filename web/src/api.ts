@@ -10,3 +10,15 @@ export const getMember = async (token: string) => {
         throw new Error(`Failed to get member\n${text}`);
     }
 };
+
+export const getCourts = async (token: string) => {
+    const response = await fetch(`${API_ENDPOINT}/getCourts?token=${token}`);
+    if (response.ok) {
+        const data = await response.json();
+        return data;
+    } else {
+        const text = await response.text();
+        throw new Error(`Failed to get courts\n${text}`);
+    }
+};
+

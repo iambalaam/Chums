@@ -1,0 +1,41 @@
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.ball {
+    margin: auto;
+    animation: spin 3s linear infinite;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background-color: #ffd166;
+    border-radius: 75px;
+    overflow: hidden;
+}
+
+.ball::before {
+    position: absolute;
+    top: -30%;
+    left: -30%;
+    content: "";
+    width: 100px;
+    height: 100px;
+    border: 8px solid #fcfcfc;
+    border-radius: 58px;
+}
+
+.ball::after {
+    position: absolute;
+    bottom: -30%;
+    right: -30%;
+    content: "";
+    width: 100px;
+    height: 100px;
+    border: 8px solid #fcfcfc;
+    border-radius: 58px;
+}
