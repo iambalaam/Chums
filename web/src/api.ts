@@ -1,3 +1,5 @@
+import { Player } from "../../functions/src/util/storage";
+
 const API_ENDPOINT = 'https://us-central1-chums-tennis.cloudfunctions.net/';
 
 export const getToken = (): string | undefined => {
@@ -13,8 +15,8 @@ export const getToken = (): string | undefined => {
     }
 };
 
-const get = async (operation: string, token: string) => {
-    const response = await fetch(`${API_ENDPOINT}/api/${operation}?token=${token}`);
+const get = async (operation: string, token: string, query: string = '') => {
+    const response = await fetch(`${API_ENDPOINT}/api/${operation}?token=${token}&${query}`);
     if (response.ok) {
         const data = await response.json();
         return data;
@@ -42,8 +44,12 @@ export async function getMember(token: string) {
     return await get('getMember', token);
 }
 
-export async function getCourts(token: string) {
+export async function getCourts(token: string): Promise<number[]> {
     return await get('getCourts', token);
+}
+
+export async function getPlayer(token: string, seconds: number): Promise<Player> {
+    return await get('getPlayer', token, `seconds=${seconds}`);
 }
 
 export async function getPlayers(token: string) {

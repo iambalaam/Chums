@@ -2,17 +2,16 @@ import './time-slots.css';
 import * as React from 'react';
 import { getToken, requestCourt, cancelRequestCourt } from './api';
 import { Ball } from './loading';
+import { Player } from '../../functions/src/util/storage';
 
 ///////////////
 // TIME SLOT //
 ///////////////
 
-export type BookingRequestStatus = 'Requested' | '';
+export type BookingRequestStatus = 'Requested' | 'Booked' | '';
 export interface TimeSlotProps {
     date: Date;
-    initialStatus: BookingRequestStatus;
-    add: () => Promise<void>;
-    remove: () => Promise<void>;
+    player: Player;
 }
 interface TimeSlotState {
     isLoading: boolean;
@@ -22,9 +21,18 @@ interface TimeSlotState {
 export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
     constructor(props: TimeSlotProps) {
         super(props);
+        const playerExists = props.player.EmailAddress != undefined;
+        const isLocked = Boolean(props.player.CourtNumber);
+        let status: BookingRequestStatus = '';
+        if (playerExists) {
+            status = 'Requested';
+        }
+        if (isLocked) {
+            status = 'Booked';
+        }
         this.state = {
             isLoading: false,
-            status: props.initialStatus
+            status
         };
     }
 
@@ -53,6 +61,7 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
     render() {
         const { status } = this.state;
         const isRequested = Boolean(status);
+        const isLocked = status === 'Booked';
         return (
             <li className="time-slot">
                 <span className="time">{this.props.date.toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })}</span>
@@ -61,8 +70,8 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
                     {this.state.isLoading
                         ? <Ball size="small" />
                         : <>
-                            <button disabled={isRequested} onClick={this.request}>+</button>
-                            <button disabled={!isRequested} onClick={this.cancelRequest}>-</button>
+                            <button disabled={isRequested || isLocked} onClick={this.request}>+</button>
+                            <button disabled={!isRequested || isLocked} onClick={this.cancelRequest}>-</button>
                         </>}
                 </span>
             </li>

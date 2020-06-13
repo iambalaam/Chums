@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import {
     getCourts as getAllCourts,
+    getPlayer as getPlayerFromId,
     getPlayers as getAllPlayers,
     Player, storePlayer, Member, AuthToken, FirebaseTimestamp, deletePlayer
 } from '../util/storage';
@@ -17,7 +18,7 @@ export const api = functions.https.onRequest(async (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     const origin = req.headers.origin as string;
     if (ALLOWED_ORIGINS.includes(origin)) {
-        res.setHeader('Access-Control-Allow-Origin', origin);
+        res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
         res.setHeader('Access-Control-Allow-Headers', '*');
     }
@@ -33,6 +34,8 @@ export const api = functions.https.onRequest(async (req, res) => {
                 return await getMember(req, res);
             case '/getCourts':
                 return await getCourts(req, res);
+            case '/getPlayer':
+                return await getPlayer(req, res);
             case '/getPlayers':
                 return await getPlayers(req, res);
             case '/requestCourt':
@@ -63,6 +66,17 @@ const getMember = async (_req: functions.https.Request, res: functions.Response)
         memberId: (res.locals.authToken as AuthToken).MemberId,
         member: (res.locals.member as Member)
     });
+};
+
+const getPlayer = async (req: functions.https.Request, res: functions.Response) => {
+    if (req.method !== 'GET') throw new Error(`Cannot ${req.method} /api/getPlayer`);
+    if (!req.query || typeof req.query.seconds !== 'string') throw new Error(`Missing query seconds`);
+    const seconds = parseInt(req.query.seconds);
+    if (!seconds) throw new Error(`Missing query seconds is not a number`);
+
+    const authToken: AuthToken = res.locals.authToken;
+
+    return res.send(await getPlayerFromId(`${authToken.MemberId}-${seconds}`) || {});
 };
 
 const getPlayers = async (_req: functions.https.Request, res: functions.Response) => {
