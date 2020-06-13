@@ -65,6 +65,13 @@ export const getUserById = (userId: string) => {
         });
 };
 
+export const getPlayers = async (): Promise<Player[]> => {
+    const docRefs = await db.collection('Players').listDocuments();
+    const docs = await Promise.all(docRefs.map((docRef) => docRef.get()));
+    const players = docs.map((doc) => doc.data() as Player);
+    return await players;
+};
+
 export const getPlayer = async (playerId: string): Promise<Player | undefined> => {
     const data = db.collection('Players')
         .doc(playerId)

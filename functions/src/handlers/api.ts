@@ -1,5 +1,9 @@
 import * as functions from 'firebase-functions';
-import { getCourts as getAllCourts, Player, storePlayer, Member, AuthToken, FirebaseTimestamp } from '../util/storage';
+import {
+    getCourts as getAllCourts,
+    getPlayers as getAllPlayers,
+    Player, storePlayer, Member, AuthToken, FirebaseTimestamp
+} from '../util/storage';
 import { getWeek } from '../util/datetime';
 import { authMiddleware } from '../util/auth';
 import { firestore } from 'firebase-admin';
@@ -28,6 +32,8 @@ export const api = functions.https.onRequest(async (req, res) => {
                 return await getMember(req, res);
             case '/getCourts':
                 return await getCourts(req, res);
+            case '/getPlayers':
+                return await getPlayers(req, res);
             case '/requestCourt':
                 await requestCourt(req, res);
                 return;
@@ -53,6 +59,10 @@ const getMember = async (_req: functions.https.Request, res: functions.Response)
         memberId: (res.locals.authToken as AuthToken).MemberId,
         member: (res.locals.member as Member)
     });
+};
+
+const getPlayers = async (_req: functions.https.Request, res: functions.Response) => {
+    return res.send(await getAllPlayers());
 };
 
 const getCourts = async (req: functions.https.Request, res: functions.Response) => {

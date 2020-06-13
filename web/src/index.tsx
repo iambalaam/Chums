@@ -2,9 +2,11 @@ import * as React from 'react';
 import { render } from 'react-dom';
 
 import { Member } from '../../functions/src/util/storage';
+import { getWeek } from '../../functions/src/util/datetime';
 
 import { getMember, getCourts } from './api';
 import { Nav } from './nav';
+import { GameWeekTable } from './game-week-table';
 import './index.css';
 import { Loading } from './loading';
 
@@ -53,14 +55,24 @@ class App extends React.Component<{}, AppState> {
         }
     }
 
+
+
     render() {
         const { member, isLoading, courtTimes } = this.state;
+        const courtTimeDates = courtTimes?.map((courtTime) => new Date(courtTime * 1000));
         return (
             <div id="app">
                 <Nav member={member} />
-                <main>
-                    {isLoading ? <Loading /> : courtTimes!.toString()}
-                </main>
+                <div className="container">
+                    <main>
+                        {isLoading
+                            ? <Loading />
+                            : <>
+                                <h1 className="game-week">Game Week <span>{getWeek(courtTimeDates![0])}</span></h1>
+                                <GameWeekTable courtTimeDates={courtTimeDates!} />
+                            </>}
+                    </main>
+                </div>
             </div>
         );
     }

@@ -27,3 +27,15 @@ export const CalendarWithTime: React.SFC<CalendarProps> = ({ date, status }) => 
         </div>
     );
 };
+
+export const CalendarWithoutTime: React.SFC<CalendarProps> = ({ date }) => {
+    return (
+        <div className="calendar">
+            <div className="header">{date.toLocaleDateString('en-GB', { weekday: 'long' })}</div>
+            <div className="body">
+                <div className="month">{date.toLocaleDateString('en-GB', { month: 'long' })}</div>
+                <div className="date">{date.getDate()}</div>
+            </div>
+        </div>
+    );
+};
