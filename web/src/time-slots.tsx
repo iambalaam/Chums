@@ -1,5 +1,6 @@
 import './time-slots.css';
 import * as React from 'react';
+import { getToken, requestCourt, cancelRequestCourt } from './api';
 
 ///////////////
 // TIME SLOT //
@@ -7,7 +8,7 @@ import * as React from 'react';
 
 export type BookingRequestStatus = 'Requested' | '';
 export interface TimeSlotProps {
-    time: string;
+    date: Date;
     initialStatus: BookingRequestStatus;
     add: () => Promise<void>;
     remove: () => Promise<void>;
@@ -24,35 +25,36 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
         };
     }
 
-    handleAdd = async () => {
-        try {
-            await this.props.add();
-            this.setState({ status: 'Requested' });
-        } catch (e) {
-            console.error(e);
+    request = async () => {
+        const token = getToken();
+        if (token) {
+            const response = await requestCourt(token, this.props.date.getTime() / 1000);
+            if (response.ok) {
+                this.setState({ status: 'Requested' });
+            }
         }
     };
 
-    handleRemove = async () => {
-        try {
-            await this.props.remove();
-            this.setState({ status: '' });
-        } catch (e) {
-            console.error(e);
+    cancelRequest = async () => {
+        const token = getToken();
+        if (token) {
+            const response = await cancelRequestCourt(token, this.props.date.getTime() / 1000);
+            if (response.ok) {
+                this.setState({ status: '' });
+            }
         }
     };
 
     render() {
-        const { time } = this.props;
         const { status } = this.state;
         const isRequested = Boolean(status);
         return (
             <li className="time-slot">
-                <span className="time">{time}</span>
+                <span className="time">{this.props.date.toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })}</span>
                 <span className="status">{status}</span>
                 <span className="actions">
-                    <button disabled={isRequested} onClick={this.handleAdd}>+</button>
-                    <button disabled={!isRequested} onClick={this.handleRemove}>-</button>
+                    <button disabled={isRequested} onClick={this.request}>+</button>
+                    <button disabled={!isRequested} onClick={this.cancelRequest}>-</button>
                 </span>
             </li>
         );

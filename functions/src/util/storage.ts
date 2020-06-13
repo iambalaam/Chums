@@ -86,6 +86,13 @@ export const storePlayer = async (playerId: string, player: Player) => {
         .set(player);
 };
 
+export const deletePlayer = async (playerId: string) => {
+    const data = db.collection('Players')
+        .doc(playerId)
+        .delete();
+    return data;
+};
+
 export type DataUpdateStatus = 'Exists' | 'Stored' | 'Failed';
 export const getOrStorePlayer = async (playerId: string, player: Player): Promise<DataUpdateStatus> => {
     const storedPlayed = await getPlayer(playerId);

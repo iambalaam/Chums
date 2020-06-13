@@ -9,6 +9,7 @@
     /* Styling */
     background-color: #eee;
     text-align: center;
+    box-shadow: 0 4px rgba(0, 0, 0, 0.2);
 }
 
 .calendar.status::after {

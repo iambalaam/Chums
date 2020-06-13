@@ -8,7 +8,7 @@ export interface GameWeekTableProps {
     courtTimeDates: Date[];
 }
 export const GameWeekTable = ({ courtTimeDates: courtTimes }: GameWeekTableProps) => {
-    const datesAndTimes: { [date: string]: string[]; } = {};
+    const datesAndTimes: { [date: string]: Date[]; } = {};
     for (const courtTime of courtTimes) {
         // Get the date (without time)
         const d = new Date(courtTime);
@@ -18,7 +18,7 @@ export const GameWeekTable = ({ courtTimeDates: courtTimes }: GameWeekTableProps
         if (!datesAndTimes[dateString]) {
             datesAndTimes[dateString] = [];
         }
-        datesAndTimes[dateString].push(courtTime.toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' }));
+        datesAndTimes[dateString].push(courtTime);
         datesAndTimes[dateString].sort();
     }
     return (
@@ -33,9 +33,9 @@ export const GameWeekTable = ({ courtTimeDates: courtTimes }: GameWeekTableProps
                             <ul className="time-slots">
                                 {times.map((time) =>
                                     <TimeSlot
-                                        key={time}
+                                        key={time.toISOString()}
+                                        date={time}
                                         initialStatus=""
-                                        time={time}
                                         add={async () => { }}
                                         remove={async () => { }}
                                     />

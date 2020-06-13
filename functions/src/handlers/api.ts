@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 import {
     getCourts as getAllCourts,
     getPlayers as getAllPlayers,
-    Player, storePlayer, Member, AuthToken, FirebaseTimestamp
+    Player, storePlayer, Member, AuthToken, FirebaseTimestamp, deletePlayer
 } from '../util/storage';
 import { getWeek } from '../util/datetime';
 import { authMiddleware } from '../util/auth';
@@ -19,6 +19,7 @@ export const api = functions.https.onRequest(async (req, res) => {
     if (ALLOWED_ORIGINS.includes(origin)) {
         res.setHeader('Access-Control-Allow-Origin', origin);
         res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Headers', '*');
     }
 
 
@@ -36,6 +37,9 @@ export const api = functions.https.onRequest(async (req, res) => {
                 return await getPlayers(req, res);
             case '/requestCourt':
                 await requestCourt(req, res);
+                return;
+            case '/cancelRequestCourt':
+                await cancelRequestCourt(req, res);
                 return;
             default:
                 throw new Error('404');
@@ -90,11 +94,11 @@ const requestCourt = async (req: functions.https.Request, res: functions.Respons
     const { seconds } = req.body;
 
     // Check params
-    if (typeof seconds !== 'string') throw new Error(`body.seconds is ${typeof seconds}`);
+    if (typeof seconds !== 'number') throw new Error(`body.seconds is ${typeof seconds}`);
 
     // Check that court exists
     const courts = await getAllCourts();
-    const court = courts.find((c) => c.DateAndTimeOfGame._seconds === parseInt(seconds));
+    const court = courts.find((c) => c.DateAndTimeOfGame._seconds === seconds);
     if (!court) throw new Error('No available court at given time');
 
     const authToken: AuthToken = res.locals.authToken;
@@ -104,8 +108,8 @@ const requestCourt = async (req: functions.https.Request, res: functions.Respons
     // Construct player entry
     const player: Player = {
         CourtNumber: 0,
-        DateAndTimeOfGame: firestore.Timestamp.fromDate(new Date(parseInt(seconds) * 1000)) as any as FirebaseTimestamp,
-        GameWeek: getWeek(new Date(parseInt(seconds) * 1000)),
+        DateAndTimeOfGame: firestore.Timestamp.fromDate(new Date(seconds * 1000)) as any as FirebaseTimestamp,
+        GameWeek: getWeek(new Date(seconds * 1000)),
         Position: null,
         EmailAddress,
         FirstName,
@@ -114,5 +118,18 @@ const requestCourt = async (req: functions.https.Request, res: functions.Respons
 
     // Store in database
     await storePlayer(`${authToken.MemberId}-${seconds}`, player);
+    res.send(200);
+};
+
+const cancelRequestCourt = async (req: functions.https.Request, res: functions.Response) => {
+    if (req.method !== 'POST') throw new Error(`Cannot ${req.method} /api/requestCourt`);
+    const { seconds } = req.body;
+
+    // Check params
+    if (typeof seconds !== 'number') throw new Error(`body.seconds is ${typeof seconds}`);
+
+    const authToken: AuthToken = res.locals.authToken;
+
+    await deletePlayer(`${authToken.MemberId}-${seconds}`);
     res.send(200);
 };
