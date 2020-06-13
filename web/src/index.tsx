@@ -55,7 +55,7 @@ class App extends React.Component<{}, AppState> {
                         {isLoading
                             ? <Loading />
                             : <>
-                                <h1 className="game-week">Game Week <span>{getWeek(courtTimeDates![0])}</span></h1>
+                                <h1 className="game-week">Game Week <span className="number">{getWeek(courtTimeDates![0])}</span></h1>
                                 <GameWeekTable courtTimeDates={courtTimeDates!} />
                             </>}
                     </main>

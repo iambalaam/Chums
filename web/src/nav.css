@@ -1,6 +1,7 @@
 /* colors from https://coolors.co/26547c-ef476f-05b384-ffd166-fcfcfc */
 nav {
     position: fixed;
+    z-index: 100;
     width: 100%;
     color: white;
     height: 60px;
