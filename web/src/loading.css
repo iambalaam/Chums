@@ -31,7 +31,7 @@
     content: "";
     width: 100px;
     height: 100px;
-    border: 8px solid #fcfcfc;
+    border: 8px solid white;
     border-radius: 58px;
 }
 
@@ -42,6 +42,25 @@
     content: "";
     width: 100px;
     height: 100px;
-    border: 8px solid #fcfcfc;
+    border: 8px solid white;
     border-radius: 58px;
+}
+
+/* Smaller size */
+.small.ball {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+.small.ball::before {
+    width: 20;
+    height: 20px;
+    border-width: 2px;
+    border-radius: 22px;
+}
+.small.ball::after {
+    width: 20;
+    height: 20px;
+    border-width: 2px;
+    border-radius: 22px;
 }

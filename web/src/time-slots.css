@@ -22,7 +22,14 @@
     text-align: center;
 }
 .time-slot button {
-    width: 40px;
-    height: 40px;
+    width: 32px;
+    height: 32px;
     margin-left: 10px;
+    /* Makes button 32px high */
+    font-size: 27px;
+    line-height: 27px;
+}
+.time-slot .actions {
+    width: 100px;
+    text-align: center;
 }

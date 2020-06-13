@@ -1,6 +1,7 @@
 import './time-slots.css';
 import * as React from 'react';
 import { getToken, requestCourt, cancelRequestCourt } from './api';
+import { Ball } from './loading';
 
 ///////////////
 // TIME SLOT //
@@ -14,6 +15,7 @@ export interface TimeSlotProps {
     remove: () => Promise<void>;
 }
 interface TimeSlotState {
+    isLoading: boolean;
     status: BookingRequestStatus;
 }
 
@@ -21,26 +23,29 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
     constructor(props: TimeSlotProps) {
         super(props);
         this.state = {
+            isLoading: false,
             status: props.initialStatus
         };
     }
 
     request = async () => {
+        this.setState({ isLoading: true });
         const token = getToken();
         if (token) {
             const response = await requestCourt(token, this.props.date.getTime() / 1000);
             if (response.ok) {
-                this.setState({ status: 'Requested' });
+                this.setState({ isLoading: false, status: 'Requested' });
             }
         }
     };
 
     cancelRequest = async () => {
+        this.setState({ isLoading: true });
         const token = getToken();
         if (token) {
             const response = await cancelRequestCourt(token, this.props.date.getTime() / 1000);
             if (response.ok) {
-                this.setState({ status: '' });
+                this.setState({ isLoading: false, status: '' });
             }
         }
     };
@@ -53,8 +58,12 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
                 <span className="time">{this.props.date.toLocaleString('en-GB', { hour: 'numeric', minute: 'numeric' })}</span>
                 <span className="status">{status}</span>
                 <span className="actions">
-                    <button disabled={isRequested} onClick={this.request}>+</button>
-                    <button disabled={!isRequested} onClick={this.cancelRequest}>-</button>
+                    {this.state.isLoading
+                        ? <Ball size="small" />
+                        : <>
+                            <button disabled={isRequested} onClick={this.request}>+</button>
+                            <button disabled={!isRequested} onClick={this.cancelRequest}>-</button>
+                        </>}
                 </span>
             </li>
         );
@@ -63,4 +72,4 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
 
 ////////////////
 // TIME SLOTS //
-////////////////
+////////////////;
