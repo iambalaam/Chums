@@ -1,6 +1,7 @@
 .game-week-table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 50px;
 }
 
 .game-week-table td {

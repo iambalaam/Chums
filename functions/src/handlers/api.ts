@@ -87,16 +87,9 @@ const getCourts = async (req: functions.https.Request, res: functions.Response) 
     if (req.method !== 'GET') throw new Error(`Cannot ${req.method} /api/getCourts`);
     const courts = await getAllCourts();
 
-    // Find most recent courts
-    let newestGameWeek = 0;
-    for (const court of courts) {
-        if (court.GameWeek > newestGameWeek) newestGameWeek = court.GameWeek;
-    }
-
     // Filter by gameweek and distinct times
     const distinctGameSeconds: Set<number> = new Set();
     courts
-        .filter(court => court.GameWeek === newestGameWeek)
         .forEach((court) => {
             distinctGameSeconds.add(court.DateAndTimeOfGame._seconds);
         });

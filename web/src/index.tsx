@@ -10,10 +10,12 @@ import { GameWeekTable } from './game-week-table';
 import './index.css';
 import { Loading } from './loading';
 
+const WEEKS_TO_SHOW = 2;
+
 export interface AppState {
     isLoading: boolean;
     member?: Member;
-    courts?: [Date, Player][];
+    courtsByWeek?: { [week: number]: Date[]; };
 }
 
 class App extends React.Component<{}, AppState> {
@@ -27,24 +29,26 @@ class App extends React.Component<{}, AppState> {
     async componentDidMount() {
         const token = getToken();
         if (token) {
+            // Find all distinct courts
             const memberPromise = getMember(token);
             const courtsPromise = getCourts(token);
-
-            // Find all distinct courts
             const [memberData, courtTimes] = await Promise.all([memberPromise, courtsPromise]);
             const member = memberData.member as Member;
-            const sortedCourtTimes = courtTimes;
-            sortedCourtTimes.sort();
 
-            const playerPromises = sortedCourtTimes.map((time) => getPlayer(token, time));
-            const players = await Promise.all(playerPromises);
-
-            const courts = sortedCourtTimes.map((time, i) => [new Date(time * 1000), players[i]] as [Date, Player]);
+            const courtsByWeek: { [week: number]: Date[]; } = {};
+            courtTimes.forEach((time) => {
+                const date = new Date(time * 1000);
+                const week = getWeek(date);
+                if (!courtsByWeek[week]) {
+                    courtsByWeek[week] = [];
+                }
+                courtsByWeek[week].push(date);
+            });
 
             this.setState({
                 isLoading: false,
                 member,
-                courts
+                courtsByWeek
             });
         } else {
             console.error('Could not authenticate');
@@ -53,7 +57,7 @@ class App extends React.Component<{}, AppState> {
 
 
     render() {
-        const { member, isLoading, courts } = this.state;
+        const { member, isLoading, courtsByWeek } = this.state;
         return (
             <div id="app">
                 <Nav member={member} />
@@ -62,8 +66,15 @@ class App extends React.Component<{}, AppState> {
                         {isLoading
                             ? <Loading />
                             : <>
-                                <h1 className="game-week">Game Week <span className="number">{getWeek(courts![0][0])}</span></h1>
-                                <GameWeekTable courts={courts!} />
+                                {Object.entries(courtsByWeek!)
+                                    .sort(([week1], [week2]) => parseInt(week2) - parseInt(week1))
+                                    .slice(0, WEEKS_TO_SHOW + 1)
+                                    .map(([week, dates]) => (
+                                        <>
+                                            <h1 className="game-week">Game Week <span className="number">{week}</span></h1>
+                                            <GameWeekTable dates={dates} />
+                                        </>
+                                    ))}
                             </>}
                     </main>
                 </div>
