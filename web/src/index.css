@@ -25,25 +25,3 @@ body {
     display: flex;
     flex-direction: column;
 }
-main {
-    background-color: white;
-    padding: 20px;
-    flex-grow: 1;
-    margin: auto;
-    width: 800px;
-}
-
-.game-week {
-    font-size: 20px;
-    line-height: 20px;
-    margin: 0;
-    padding: 10px;
-    background-color: #05b384;
-    color: white;
-    text-transform: uppercase;
-    font-stretch: expanded;
-}
-.game-week .number {
-    font-size: 40px;
-    line-height: 40px;
-}
