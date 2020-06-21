@@ -1,7 +1,10 @@
 {
     "compilerOptions": {
+        "sourceMap": true,
         "strict": true,
-        "lib": ["DOM"],
+        "lib": [
+            "DOM"
+        ],
         "jsx": "react"
     }
 }

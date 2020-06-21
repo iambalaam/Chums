@@ -1,0 +1,42 @@
+#overlay {
+    z-index: 1000;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+#modal {
+    /* Sizing */
+    position: absolute;
+    z-index: 1001;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 320px;
+    min-height: 200px;
+
+    /* Styling */
+    color: white;
+    background-color: indianred;
+    padding: 20px;
+    border-radius: 16px;
+}
+
+#modal h2 {
+    margin: 0;
+}
+
+#modal .cross {
+    float: right;
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    cursor: pointer;
+    border-radius: 4px;
+    line-height: 24px;
+    text-align: center;
+    border: none;
+}

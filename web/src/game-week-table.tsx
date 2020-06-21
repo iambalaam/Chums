@@ -19,21 +19,22 @@ export const GameWeekTable = ({ dates }: GameWeekTableProps) => {
             datesAndTimes[dateString] = [];
         }
         datesAndTimes[dateString].push(date);
-        datesAndTimes[dateString].sort();
     }
     return (
         <table className="game-week-table">
             <tbody>
-                {Object.entries(datesAndTimes).map(([dateString, times]) => (
-                    <tr key={dateString}>
-                        <td className="calendar-cell">
-                            <CalendarWithoutTime date={new Date(dateString)} />
-                        </td>
-                        <td>
-                            <TimeSlots times={times} />
-                        </td>
-                    </tr>
-                ))}
+                {Object.entries(datesAndTimes)
+                    .sort(([d1], [d2]) => d1 < d2 ? -1 : 1)
+                    .map(([dateString, times]) => (
+                        <tr key={dateString}>
+                            <td className="calendar-cell">
+                                <CalendarWithoutTime date={new Date(dateString)} />
+                            </td>
+                            <td>
+                                <TimeSlots times={times} />
+                            </td>
+                        </tr>
+                    ))}
             </tbody>
         </table >
     );
