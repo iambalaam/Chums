@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './nav.css';
-import { Member } from '../../functions/src/util/storage';
+import { Member } from '../../../functions/src/util/storage';
 
 export interface NavProps {
     member?: Member;

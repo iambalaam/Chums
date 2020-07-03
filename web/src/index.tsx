@@ -4,9 +4,9 @@ import { render } from 'react-dom';
 import { Member } from '../../functions/src/util/storage';
 
 import { getToken, getMember } from './api';
-import { Nav } from './nav';
+import { Nav } from './components/nav';
 import './index.css';
-import { ErrorModal } from './error-modal';
+import { ErrorModal } from './components/error-modal';
 import { isError, UserFacingError } from './util';
 import { BookingRequests } from './booking-requests';
 
@@ -64,6 +64,7 @@ class App extends React.Component<{}, AppState> {
     }
 
     handleError = (error: any) => {
+        console.error(error);
         this.setState({ error });
     };
 

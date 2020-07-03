@@ -1,6 +1,6 @@
 import * as React from 'react';
 import './error-modal.css';
-import { UserFacingError } from './util';
+import { UserFacingError } from '../util';
 
 export interface ErrorModalProps {
     err: any;

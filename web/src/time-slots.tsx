@@ -1,9 +1,8 @@
 import './time-slots.css';
 import * as React from 'react';
-import { getToken, requestCourt, cancelRequestCourt, getPlayer } from './api';
-import { Ball } from './loading';
-import { Player, Member } from '../../functions/src/util/storage';
-import { Court } from './court';
+import { getToken, requestCourt, cancelRequestCourt } from './api';
+import { Ball } from './components/loading';
+import { CourtWithId } from '../../functions/src/util/storage';
 
 ///////////////
 // TIME SLOT //
@@ -75,50 +74,26 @@ export class TimeSlot extends React.Component<TimeSlotProps, TimeSlotState> {
 ////////////////
 
 interface TimeSlotsProps {
-    times: Date[];
-}
-interface TimeSlotsState {
-    players?: Player[];
+    courts: CourtWithId[];
 }
 
-export class TimeSlots extends React.Component<TimeSlotsProps, TimeSlotsState> {
-    constructor(props: TimeSlotsProps) {
-        super(props);
-        this.state = {};
-    }
-
-    async componentDidMount() {
-        const sortedTimes = this.props.times.sort();
-        const playersPromises = sortedTimes.map((time) => {
-            const seconds = time.getTime() / 1000;
-            return getPlayer(getToken()!, seconds);
-        });
-
-        const players = await Promise.all(playersPromises);
-
-        this.setState({ players });
-    }
-
+export class TimeSlots extends React.Component<TimeSlotsProps, {}> {
     render() {
-        const { players } = this.state;
-        if (!players) return null;
+        // Get name
 
-        console.log(players);
-        const isBooked = players.some((player) => Boolean(player.CourtNumber));
-
-        if (isBooked) {
-            const mockMembers = [
-                { FirstName: 'First', LastName: 'Last' },
-                { FirstName: 'First', LastName: 'Last' },
-                { FirstName: 'First', LastName: 'Last' },
-                { FirstName: 'First', LastName: 'Last' }
-            ] as Member[];
-            return <Court courtNumber={0} members={mockMembers} />;
-        } else {
-            return this.props.times.map((time, i) => {
-                const status = Boolean(players[i].EmailAddress) ? 'Requested' : '';
-                return <TimeSlot date={time} initialStatus={status} />;
-            });
+        // Get Distinct courts
+        const groupedCourts: { [ms: number]: CourtWithId[]; } = {};
+        for (const court of this.props.courts) {
+            const ms = court.DateAndTimeOfGame._seconds * 1000;
+            // Initialise
+            if (!groupedCourts[ms]) {
+                groupedCourts[ms] = [];
+            }
+            groupedCourts[ms].push(court);
         }
+        return Object.entries(groupedCourts).map(([ms, _courts]) => {
+            // Check if court contains name
+            return <TimeSlot date={new Date(parseInt(ms))} initialStatus='' />;
+        });
     }
 }
