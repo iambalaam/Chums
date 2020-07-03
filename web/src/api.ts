@@ -1,4 +1,4 @@
-import { Player } from "../../functions/src/util/storage";
+import { Player, CourtWithId } from "../../functions/src/util/storage";
 
 const API_ENDPOINT = 'https://us-central1-chums-tennis.cloudfunctions.net/';
 
@@ -44,7 +44,7 @@ export async function getMember(token: string) {
     return await get('getMember', token);
 }
 
-export async function getCourts(token: string): Promise<number[]> {
+export async function getCourts(token: string): Promise<CourtWithId[]> {
     return await get('getCourts', token);
 }
 
@@ -56,6 +56,10 @@ export async function getPlayers(token: string) {
     return await get('getPlayers', token);
 }
 
+export async function getGlobalFlags(token: string) {
+    return await get('getGlobalFlags', token);
+}
+
 export async function requestCourt(token: string, seconds: number) {
     return await post('requestCourt', token, { seconds });
 };
@@ -63,3 +67,4 @@ export async function requestCourt(token: string, seconds: number) {
 export async function cancelRequestCourt(token: string, seconds: number) {
     return await post('cancelRequestCourt', token, { seconds });
 };
+

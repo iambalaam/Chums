@@ -115,13 +115,24 @@ export interface Court {
     Player3: null,
     Player4: null;
 }
-export interface CourWithId extends Court {
+export interface CourtWithId extends Court {
     id: string;
 }
 
-export const getCourts = async (): Promise<CourWithId[]> => {
+export const getCourts = async (): Promise<CourtWithId[]> => {
     const docRefs = await db.collection('Courts').listDocuments();
     const docs = await Promise.all(docRefs.map((docRef) => docRef.get()));
     const courts = docs.map((doc) => ({ ...doc.data() as Court, id: doc.id }));
     return await courts;
+};
+
+
+export interface GlobalFlags {
+    CallForChums: boolean;
+}
+export const getGlobalFlags = async () => {
+    const data = db.collection('Globals')
+        .doc('Flags')
+        .get();
+    return data;
 };

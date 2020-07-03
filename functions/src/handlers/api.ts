@@ -3,6 +3,7 @@ import {
     getCourts as getAllCourts,
     getPlayer as getPlayerFromId,
     getPlayers as getAllPlayers,
+    getGlobalFlags as getAllFlags,
     Player, storePlayer, Member, AuthToken, FirebaseTimestamp, deletePlayer
 } from '../util/storage';
 import { getWeek } from '../util/datetime';
@@ -44,6 +45,8 @@ export const api = functions.https.onRequest(async (req, res) => {
             case '/cancelRequestCourt':
                 await cancelRequestCourt(req, res);
                 return;
+            case '/getGlobalFlags':
+                return await getGlobalFlags(req, res);
             default:
                 throw new Error('404');
         }
@@ -86,14 +89,7 @@ const getPlayers = async (_req: functions.https.Request, res: functions.Response
 const getCourts = async (req: functions.https.Request, res: functions.Response) => {
     if (req.method !== 'GET') throw new Error(`Cannot ${req.method} /api/getCourts`);
     const courts = await getAllCourts();
-
-    // Filter by gameweek and distinct times
-    const distinctGameSeconds: Set<number> = new Set();
-    courts
-        .forEach((court) => {
-            distinctGameSeconds.add(court.DateAndTimeOfGame._seconds);
-        });
-    return res.send(Array.from(distinctGameSeconds));
+    return res.send(courts);
 };
 
 const requestCourt = async (req: functions.https.Request, res: functions.Response) => {
@@ -139,4 +135,9 @@ const cancelRequestCourt = async (req: functions.https.Request, res: functions.R
 
     await deletePlayer(`${authToken.MemberId}-${seconds}`);
     res.send(200);
+};
+
+const getGlobalFlags = async (req: functions.https.Request, res: functions.Response) => {
+    if (req.method !== 'GET') throw new Error(`Cannot ${req.method} /api/getGlobalFlags`);
+    return res.send(await getAllFlags());
 };
