@@ -3,9 +3,12 @@ import './loading.css';
 
 export interface BallProps { size?: 'normal' | 'small'; }
 
-export const Loading = (props: BallProps) =>
-    <div className="loading">
-        <Ball {...props} />
-    </div>;
+export function Loading(props: BallProps) {
+    return (
+        <div className="loading">
+            <Ball {...props} />
+        </div>
+    );
+}
 
-export const Ball = (props: BallProps) => <div className={`ball ${props.size || 'normal'}`} />;
+export function Ball(props: BallProps) { return <div className={`ball ${props.size || 'normal'}`} />; };

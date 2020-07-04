@@ -1,14 +1,11 @@
 import * as React from 'react';
 import { CalendarWithoutTime } from './components/calendar';
-import { TimeSlot, TimeSlots } from './time-slots';
+import { TimeSlots } from './time-slots';
 
 import './game-week-table.css';
 import { CourtWithId } from '../../functions/src/util/storage';
 
-export interface GameWeekTableProps {
-    courts: CourtWithId[];
-}
-export const GameWeekTable = (props: GameWeekTableProps) => {
+export function GameWeekTable(props: { courts: CourtWithId[]; }) {
     const datesAndCourts: { [date: string]: CourtWithId[]; } = {};
     for (const court of props.courts) {
         // Get the date (without time)
@@ -39,4 +36,4 @@ export const GameWeekTable = (props: GameWeekTableProps) => {
             </tbody>
         </table >
     );
-};
+}

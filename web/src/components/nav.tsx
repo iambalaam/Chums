@@ -5,7 +5,7 @@ import { Member } from '../../../functions/src/util/storage';
 export interface NavProps {
     member?: Member;
 }
-export const Nav: React.SFC<NavProps> = ({ member }) => {
+export function Nav({ member }: NavProps) {
     const memberSection = member
         ? <span className="member">{member.FirstName} {member.LastName}</span>
         : null;

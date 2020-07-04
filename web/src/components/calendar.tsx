@@ -9,7 +9,7 @@ export interface CalendarProps {
     };
 }
 
-export const CalendarWithTime: React.SFC<CalendarProps> = ({ date, status }) => {
+export function CalendarWithTime({ date, status }: CalendarProps) {
     const statusProps = status
         ? { style: { color: status.color }, 'data-status': status.message }
         : {};
@@ -28,7 +28,7 @@ export const CalendarWithTime: React.SFC<CalendarProps> = ({ date, status }) => 
     );
 };
 
-export const CalendarWithoutTime: React.SFC<CalendarProps> = ({ date }) => {
+export function CalendarWithoutTime({ date }: CalendarProps) {
     return (
         <div className="calendar">
             <div className="header">{date.toLocaleDateString('en-GB', { weekday: 'long' })}</div>

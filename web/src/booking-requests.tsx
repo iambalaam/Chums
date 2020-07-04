@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
 import './booking-requests.css';
 import { getToken, getCourts } from './api';
 import { getWeek } from '../../functions/src/util/datetime';
@@ -9,69 +10,57 @@ import { CourtWithId } from '../../functions/src/util/storage';
 
 const WEEKS_TO_SHOW = 2;
 
-export interface BookingRequestsProps {
-    handleError: (err: any) => void;
-}
-export interface BookingRequestsState {
-    isLoading: boolean;
-    courtsByWeek?: { [week: number]: CourtWithId[]; };
-}
+export type CourtsByWeek = { [week: number]: CourtWithId[]; } | undefined;
+export function BookingRequests(props: { handleError: (err: any) => void; }) {
+    const [isLoading, setLoading] = useState(true);
+    const [courtsByWeek, setCourtsByWeek] = useState<CourtsByWeek>();
 
-export class BookingRequests extends React.Component<BookingRequestsProps, BookingRequestsState> {
-    constructor(props: BookingRequestsProps) {
-        super(props);
-        this.state = { isLoading: true };
-    }
-
-    async componentDidMount() {
+    useEffect(function setup() {
         const token = getToken();
         if (token) {
-            try {
-                const courtTimes = await getCourts(token);
-                if (isError(courtTimes)) throw new UserFacingError(
-                    `Couldn't get court times`,
-                    courtTimes.message,
-                    courtTimes.stack || '',
-                );
+            // async iife as outer effect fn must be sync
+            (async () => {
+                try {
+                    const courtTimes = await getCourts(token);
+                    if (isError(courtTimes)) throw new UserFacingError(
+                        `Couldn't get court times`,
+                        courtTimes.message,
+                        courtTimes.stack || '',
+                    );
 
-                const courtsByWeek: { [week: number]: CourtWithId[]; } = {};
-                courtTimes.forEach((court) => {
-                    const date = new Date(court.DateAndTimeOfGame._seconds * 1000);
-                    const week = getWeek(date);
-                    if (!courtsByWeek[week]) {
-                        courtsByWeek[week] = [];
-                    }
-                    courtsByWeek[week].push(court);
-                });
-                this.setState({
-                    isLoading: false,
-                    courtsByWeek
-                });
-            } catch (error) {
-                this.props.handleError(error);
-            }
+                    const courtsByWeek: { [week: number]: CourtWithId[]; } = {};
+                    courtTimes.forEach((court) => {
+                        const date = new Date(court.DateAndTimeOfGame._seconds * 1000);
+                        const week = getWeek(date);
+                        if (!courtsByWeek[week]) {
+                            courtsByWeek[week] = [];
+                        }
+                        courtsByWeek[week].push(court);
+                    });
+                    setCourtsByWeek(courtsByWeek);
+                    setLoading(false);
+                } catch (error) {
+                    props.handleError(error);
+                }
+            })();
         }
-    }
+    }, []);
 
-    render() {
-        const { isLoading, courtsByWeek } = this.state;
-        return (
-            <main>
-                {isLoading
-                    ? <Loading />
-                    : <>
-                        {Object.entries(courtsByWeek!)
-                            .sort(([week1], [week2]) => parseInt(week2) - parseInt(week1))
-                            .slice(0, WEEKS_TO_SHOW + 1)
-                            .map(([week, courts]) => (
-                                <>
-                                    <h1 className="game-week">Game Week <span className="number">{week}</span></h1>
-                                    <GameWeekTable courts={courts} />
-                                </>
-                            ))}
-                    </>}
-            </main>
-        );
-    }
-
+    return (
+        <main>
+            {isLoading
+                ? <Loading />
+                : <>
+                    {Object.entries(courtsByWeek!)
+                        .sort(([week1], [week2]) => parseInt(week2) - parseInt(week1))
+                        .slice(0, WEEKS_TO_SHOW + 1)
+                        .map(([week, courts]) => (
+                            <>
+                                <h1 className="game-week">Game Week <span className="number">{week}</span></h1>
+                                <GameWeekTable courts={courts} />
+                            </>
+                        ))}
+                </>}
+        </main>
+    );
 }

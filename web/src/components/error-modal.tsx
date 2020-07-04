@@ -3,12 +3,13 @@ import './error-modal.css';
 import { UserFacingError } from '../util';
 
 export interface ErrorModalProps {
-    err: any;
+    errors: any;
     dismiss: () => void;
 }
 
-export const ErrorModal = ({ err, dismiss }: ErrorModalProps) => {
-    if (err) {
+export function ErrorModal({ errors, dismiss }: ErrorModalProps) {
+    if (errors.length) {
+        const err = errors[0];
         if (err instanceof UserFacingError) {
             return (
                 <>

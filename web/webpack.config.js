@@ -3,10 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const { resolve } = require('path');
 const { readFileSync } = require('fs');
-const htmlTemplate = readFileSync(resolve(__dirname, 'public', 'index.html')).toString();
+const htmlTemplate = readFileSync(resolve(__dirname, 'index.html')).toString();
+
+if (!process.env['NODE_ENV']) throw new Error('Please set NODE_ENV');
 
 module.exports = {
-    mode: 'production',
+    mode: process.env['NODE_ENV'],
     entry: resolve(__dirname, 'src', 'index.tsx'),
     output: {
         path: resolve(__dirname, 'dist'),
@@ -34,7 +36,8 @@ module.exports = {
     plugins: [
         new MiniCssExtractPlugin(),
         new HtmlWebpackPlugin({
-            templateContent: htmlTemplate
+            templateContent: htmlTemplate,
+            inject: true
         })
     ]
 };
