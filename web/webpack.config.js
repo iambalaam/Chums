@@ -1,5 +1,6 @@
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const { resolve } = require('path');
 const { readFileSync } = require('fs');
@@ -38,6 +39,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             templateContent: htmlTemplate,
             inject: true
-        })
+        }),
+        // new BundleAnalyzerPlugin()
     ]
 };
