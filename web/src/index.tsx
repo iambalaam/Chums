@@ -1,17 +1,25 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import { render } from 'react-dom';
 
 import { Member } from '../../functions/src/util/storage';
 
 import { getToken, getMember } from './api';
-import { Nav } from './components/nav';
 import './index.css';
-import { ErrorModal } from './components/error-modal';
 import { isError, UserFacingError } from './util';
-import { BookingRequests } from './booking-requests';
+import { App } from './app';
 
-function App() {
+// Contexts
+export const tokenContext = createContext<string | undefined>(undefined);
+export const memberContext = createContext<Member | undefined>(undefined);
+export const errorContext = createContext<[any[], (err: any) => void, () => void]>([[], () => { }, () => { }]);
+
+function Root() {
+    // Populate Contexts
+    const [token, setToken] = useState<string | undefined>();
+    useEffect(function setupToken() {
+        setToken(getToken());
+    }, []);
     const [member, setMember] = useState<Member | undefined>();
     const [errors, setErrors] = useState<any[]>([]);
     function handleError(err: any) {
@@ -65,16 +73,16 @@ function App() {
     }, []);
 
     return (
-        <div id="app">
-            <ErrorModal
-                errors={errors}
-                dismiss={clearErrors}
-            />
-            <Nav member={member} />
-            <div className="container">
-                <BookingRequests handleError={handleError} />
-            </div>
-        </div>
+        <errorContext.Provider value={[errors, handleError, clearErrors]}>
+            <memberContext.Provider value={member}>
+                <tokenContext.Provider value={token}>
+                    <App />
+                </tokenContext.Provider>
+            </memberContext.Provider>
+        </errorContext.Provider>
     );
 }
-render(<App />, document.getElementById('root')!);
+render(
+    <Root />,
+    document.getElementById('root')!
+);

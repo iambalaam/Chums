@@ -1,9 +1,10 @@
 import './time-slots.css';
 import * as React from 'react';
-import { useState } from 'react';
-import { getToken, requestCourt, cancelRequestCourt } from './api';
+import { useState, useContext } from 'react';
+import { requestCourt, cancelRequestCourt } from './api';
 import { Ball } from './components/loading';
 import { CourtWithId } from '../../functions/src/util/storage';
+import { tokenContext } from '.';
 
 ///////////////
 // TIME SLOT //
@@ -17,10 +18,10 @@ export interface TimeSlotProps {
 export function TimeSlot(props: TimeSlotProps) {
     const [isLoading, setLoading] = useState<boolean>(false);
     const [status, setStatus] = useState<BookingRequestStatus>(props.initialStatus);
+    const token = useContext(tokenContext);
 
     const request = async () => {
         setLoading(true);
-        const token = getToken();
         if (token) {
             const response = await requestCourt(token, props.date.getTime() / 1000);
             if (response.ok) {
@@ -32,7 +33,6 @@ export function TimeSlot(props: TimeSlotProps) {
 
     const cancelRequest = async () => {
         setLoading(true);
-        const token = getToken();
         if (token) {
             const response = await cancelRequestCourt(token, props.date.getTime() / 1000);
             if (response.ok) {
