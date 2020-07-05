@@ -78,7 +78,7 @@ export function TimeSlots(props: TimeSlotsProps) {
     return <>{
         Object.entries(groupedCourts).map(([ms, _courts]) => {
             // Check if court contains name
-            return <TimeSlot date={new Date(parseInt(ms))} initialStatus='' />;
+            return <TimeSlot key={ms} date={new Date(parseInt(ms))} initialStatus='' />;
         })
     }</>;
 

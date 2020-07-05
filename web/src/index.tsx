@@ -2,9 +2,9 @@ import * as React from 'react';
 import { useState, useEffect, createContext } from 'react';
 import { render } from 'react-dom';
 
-import { Member } from '../../functions/src/util/storage';
+import { Member, GlobalFlags } from '../../functions/src/util/storage';
 
-import { getToken, getMember } from './api';
+import { getToken, getMember, getGlobalFlags } from './api';
 import './index.css';
 import { isError, UserFacingError } from './util';
 import { App } from './app';
@@ -13,6 +13,7 @@ import { App } from './app';
 export const tokenContext = createContext<string | undefined>(undefined);
 export const memberContext = createContext<Member | undefined>(undefined);
 export const errorContext = createContext<[any[], (err: any) => void, () => void]>([[], () => { }, () => { }]);
+export const globalsContext = createContext<GlobalFlags | undefined>(undefined);
 
 function Root() {
     // Populate Contexts
@@ -27,6 +28,7 @@ function Root() {
         setErrors(errors.concat(err));
     }
     function clearErrors() { setErrors([]); };
+    const [globalFlags, setGlobalFlags] = useState<GlobalFlags | undefined>();
 
     // Extra error catching
     useEffect(function attachEventListeners() {
@@ -43,13 +45,25 @@ function Root() {
         };
     });
 
-    useEffect(function setup() {
+    useEffect(function setupToken() {
+        const t = getToken();
+        if (t) {
+            setToken(t);
+        } else {
+            handleError(new UserFacingError(
+                `Couldn't log in`,
+                `No token was present`,
+                new Error().stack || '',
+                `Click on the link in your most recent email to log in`
+            ));
+        }
+    }, []);
+
+    useEffect(function setupMember() {
         // async iife as outer effect fn must be sync
         (async () => {
             try {
-                const token = getToken();
                 if (token) {
-                    // Find all distinct courts
                     const memberData = await getMember(token);
                     if (isError(memberData)) throw new UserFacingError(
                         `Couldn't log in`,
@@ -58,28 +72,39 @@ function Root() {
                         `Click on the link in your most recent email to log in`
                     );
                     setMember(memberData.member as Member);
-                } else {
-                    throw new UserFacingError(
-                        `Couldn't log in`,
-                        `No token was present`,
-                        new Error().stack || '',
-                        `Click on the link in your most recent email to log in`
-                    );
                 }
-            } catch (error) {
-                handleError(error);
-            }
+            } catch (err) { handleError(err); }
         })();
-    }, []);
+    }, [token]);
+
+    useEffect(function setupGlobalFlags() {
+        // async iife as outer effect fn must be sync
+        (async () => {
+            try {
+                if (token) {
+                    const flags = await getGlobalFlags(token);
+                    if (isError(flags)) throw new UserFacingError(
+                        `Couldn't determine schedule`,
+                        flags.stack || '',
+                        `Refreshing the page can sometimes help`
+                    );
+                    setGlobalFlags(flags);
+                }
+            } catch (err) { handleError(err); }
+        })();
+    }, [token]);
+
 
     return (
-        <errorContext.Provider value={[errors, handleError, clearErrors]}>
-            <memberContext.Provider value={member}>
-                <tokenContext.Provider value={token}>
-                    <App />
-                </tokenContext.Provider>
-            </memberContext.Provider>
-        </errorContext.Provider>
+        <globalsContext.Provider value={globalFlags}>
+            <errorContext.Provider value={[errors, handleError, clearErrors]}>
+                <memberContext.Provider value={member}>
+                    <tokenContext.Provider value={token}>
+                        <App />
+                    </tokenContext.Provider>
+                </memberContext.Provider>
+            </errorContext.Provider>
+        </globalsContext.Provider>
     );
 }
 render(

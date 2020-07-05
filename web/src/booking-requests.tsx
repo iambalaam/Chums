@@ -56,10 +56,10 @@ export function BookingRequests(props: { handleError: (err: any) => void; }) {
                         .sort(([week1], [week2]) => parseInt(week2) - parseInt(week1))
                         .slice(0, WEEKS_TO_SHOW + 1)
                         .map(([week, courts]) => (
-                            <>
+                            <React.Fragment key={week}>
                                 <h1 className="game-week">Game Week <span className="number">{week}</span></h1>
                                 <GameWeekTable courts={courts} />
-                            </>
+                            </React.Fragment>
                         ))}
                 </>}
         </main>
