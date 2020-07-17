@@ -133,6 +133,7 @@ export interface GlobalFlags {
 export const getGlobalFlags = async () => {
     const data = db.collection('Globals')
         .doc('Flags')
-        .get();
+        .get()
+        .then((doc) => doc.data() as GlobalFlags);
     return data;
 };
