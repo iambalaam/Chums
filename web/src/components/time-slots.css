@@ -31,7 +31,35 @@
     font-size: 27px;
     line-height: 27px;
 }
+
 .time-slot .actions {
+    position: relative;
     width: 100px;
     text-align: center;
+}
+
+@keyframes fade-out {
+    0% {
+        opacity: 1;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+.time-slot .updated {
+    font-size: 16px;
+    line-height: 16px;
+    padding: 2px;
+    border-radius: 10px;
+    animation: fade-out 1.5s forwards;
+    content: "saved";
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    border: 2px solid #05b384;
+    background-color: white;
+    color: #05b384;
 }

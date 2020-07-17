@@ -10,6 +10,10 @@ import { tokenContext } from '../';
 // TIME SLOT //
 ///////////////
 
+function wait() {
+    return new Promise((resolve) => setTimeout(resolve, 1500));
+}
+
 export type BookingRequestStatus = 'Requested' | '';
 export interface TimeSlotProps {
     date: Date;
@@ -17,6 +21,7 @@ export interface TimeSlotProps {
 }
 export function TimeSlot(props: TimeSlotProps) {
     const [isLoading, setLoading] = useState<boolean>(false);
+    const [updates, setUpdates] = useState<JSX.Element[]>([]);
     const [status, setStatus] = useState<BookingRequestStatus>(props.initialStatus);
     const token = useContext(tokenContext);
 
@@ -26,7 +31,10 @@ export function TimeSlot(props: TimeSlotProps) {
             const response = await requestCourt(token, props.date.getTime() / 1000);
             if (response.ok) {
                 setStatus('Requested');
+                setUpdates([...updates, <span className="updated">saved</span>]);
                 setLoading(false);
+                await wait();
+                setUpdates(updates.slice(1));
             }
         }
     };
@@ -37,7 +45,10 @@ export function TimeSlot(props: TimeSlotProps) {
             const response = await cancelRequestCourt(token, props.date.getTime() / 1000);
             if (response.ok) {
                 setStatus('');
+                setUpdates([...updates, <span className="updated">saved</span>]);
                 setLoading(false);
+                await wait();
+                setUpdates(updates.slice(1));
             }
         }
     };
@@ -54,6 +65,7 @@ export function TimeSlot(props: TimeSlotProps) {
                         <button disabled={isRequested} onClick={request}>+</button>
                         <button disabled={!isRequested} onClick={cancelRequest}>-</button>
                     </>}
+                {!!updates.length && updates[updates.length - 1]}
             </span>
         </li>
     );
