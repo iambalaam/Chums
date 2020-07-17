@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { CalendarWithoutTime } from './components/calendar';
-import { TimeSlots } from './time-slots';
+import { TimeSlots } from './components/time-slots';
 
 import './game-week-table.css';
 import { CourtWithId } from '../../functions/src/util/storage';

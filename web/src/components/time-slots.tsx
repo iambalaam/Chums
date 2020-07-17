@@ -1,10 +1,10 @@
 import './time-slots.css';
 import * as React from 'react';
 import { useState, useContext } from 'react';
-import { requestCourt, cancelRequestCourt } from './api';
-import { Ball } from './components/loading';
-import { CourtWithId } from '../../functions/src/util/storage';
-import { tokenContext } from '.';
+import { requestCourt, cancelRequestCourt } from '../api';
+import { Ball } from './loading';
+import { CourtWithId } from '../../../functions/src/util/storage';
+import { tokenContext } from '../';
 
 ///////////////
 // TIME SLOT //
