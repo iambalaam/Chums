@@ -1,18 +1,19 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import './booking-requests.css';
-import { getCourts } from './api';
-import { getWeek } from '../../functions/src/util/datetime';
-import { Loading } from './components/loading';
-import { GameWeekTable } from './game-week-table';
-import { UserFacingError, isError } from './util';
-import { CourtWithId } from '../../functions/src/util/storage';
-import { tokenContext } from '.';
+import './call-for-chums.css';
+import './page.css';
+import { getCourts } from '../api';
+import { getWeek } from '../../../functions/src/util/datetime';
+import { Loading } from '../components/loading';
+import { GameWeekTable } from '../game-week-table';
+import { UserFacingError, isError } from '../util';
+import { CourtWithId } from '../../../functions/src/util/storage';
+import { tokenContext } from '..';
 
 const WEEKS_TO_SHOW = 2;
 
 export type CourtsByWeek = { [week: number]: CourtWithId[]; } | undefined;
-export function BookingRequests(props: { handleError: (err: any) => void; }) {
+export function CallForChums(props: { handleError: (err: any) => void; }) {
     const [isLoading, setLoading] = useState(true);
     const [courtsByWeek, setCourtsByWeek] = useState<CourtsByWeek>();
     const token = React.useContext(tokenContext);

@@ -2,13 +2,15 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { ErrorModal } from './components/error-modal';
 import { Nav } from './components/nav';
-import { BookingRequests } from './booking-requests';
-import { errorContext, memberContext } from '.';
+import { CallForChums } from './pages/call-for-chums';
+import { errorContext, memberContext, globalsContext } from '.';
+import { Players } from './pages/players';
 
 // App must be rendered inside providers.
 export function App() {
     const [errors, handleError, clearErrors] = useContext(errorContext);
     const member = useContext(memberContext);
+    const globals = useContext(globalsContext);
 
     return (
         <div id="app">
@@ -18,7 +20,11 @@ export function App() {
             />
             <Nav member={member} />
             <div className="container">
-                <BookingRequests handleError={handleError} />
+                {
+                    globals?.CallForChums
+                        ? <CallForChums handleError={handleError} />
+                        : <Players handleError={handleError} />
+                }
             </div>
         </div>
     );
