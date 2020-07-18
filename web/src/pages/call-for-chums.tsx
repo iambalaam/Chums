@@ -50,6 +50,10 @@ export function CallForChums(props: { handleError: (err: any) => void; }) {
 
     return (
         <main>
+            <div className="description">
+                <h1>CALL FOR CHUMS</h1>
+                <p>Say what to do...</p>
+            </div>
             {isLoading
                 ? <Loading />
                 : <>

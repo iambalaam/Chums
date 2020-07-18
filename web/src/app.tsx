@@ -21,9 +21,11 @@ export function App() {
             <Nav member={member} />
             <div className="container">
                 {
-                    globals?.CallForChums
-                        ? <CallForChums handleError={handleError} />
-                        : <Players handleError={handleError} />
+                    globals
+                        ? globals.CallForChums
+                            ? <CallForChums handleError={handleError} />
+                            : <Players handleError={handleError} />
+                        : null
                 }
             </div>
         </div>
