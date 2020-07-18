@@ -6,6 +6,7 @@ import { tokenContext } from '..';
 import { getCourts } from '../api';
 import { CourtWithId } from '../../../functions/src/util/storage';
 import { Loading } from '../components/loading';
+import { Court } from '../components/court';
 
 function getCourtsToShow(courts: CourtWithId[]) {
     let courtsByWeek: { [week: number]: { seconds: number, courts: CourtWithId[]; }; } = {};
@@ -69,7 +70,10 @@ export function Players(props: { handleError: (err: any) => void; }) {
             {
                 isLoading
                     ? <Loading />
-                    : <pre>{JSON.stringify(courts, null, 4)}</pre>
+                    : (courts?.map((court) => <Court
+                        courtNumber={court.CourtNumber}
+                        members={[court.Player1!, court.Player2!, court.Player3!, court.Player4!]}
+                    />))
             }
         </main>
     );

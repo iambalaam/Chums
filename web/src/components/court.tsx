@@ -1,9 +1,8 @@
 import * as React from 'react';
 import './court.css';
-import { Member } from '../../../functions/src/util/storage';
 
 export interface CourtProps {
-    members: Member[];
+    members: string[];
     courtNumber: number;
 }
 
@@ -13,10 +12,14 @@ export const Court = (props: CourtProps) =>
         <div className="tramlines__right"></div>
         <div className="no-mans-land__top"></div>
         <div className="no-mans-land__bottom"></div>
-        {props.members.map((member, index) => (
-            <div className={`servicebox__${index}`}>
-                <div className="first">{member.FirstName}</div>
-                <div className="last">{member.LastName}</div>
-            </div>
-        ))}
+        {props.members.map((member, index) => {
+            const [first, last] = member.split(/\s+/);
+            return (
+                <div className={`servicebox__${index}`}>
+                    <div className="first">{first}</div>
+                    <div className="last">{last}</div>
+                </div>
+            );
+        }
+        )}
     </div>;
