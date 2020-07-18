@@ -10,8 +10,6 @@ import { CourtWithId } from '../../../functions/src/util/storage';
 import { tokenContext } from '..';
 import { GameWeekHeader } from '../components/game-week-header';
 
-const WEEKS_TO_SHOW = 2;
-
 export type CourtsByWeek = { [week: number]: CourtWithId[]; } | undefined;
 export function CallForChums(props: { handleError: (err: any) => void; }) {
     const [isLoading, setLoading] = useState(true);
@@ -59,7 +57,7 @@ export function CallForChums(props: { handleError: (err: any) => void; }) {
                 : <>
                     {Object.entries(courtsByWeek!)
                         .sort(([week1], [week2]) => parseInt(week2) - parseInt(week1))
-                        .slice(0, WEEKS_TO_SHOW + 1)
+                        .slice(0, 1)
                         .map(([week, courts]) => (
                             <React.Fragment key={week}>
                                 <GameWeekHeader week={week} />
