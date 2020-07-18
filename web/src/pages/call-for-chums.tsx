@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-import './call-for-chums.css';
 import './page.css';
 import { getCourts } from '../api';
 import { getWeek } from '../../../functions/src/util/datetime';
@@ -9,6 +8,7 @@ import { GameWeekTable } from '../game-week-table';
 import { UserFacingError, isError } from '../util';
 import { CourtWithId } from '../../../functions/src/util/storage';
 import { tokenContext } from '..';
+import { GameWeekHeader } from '../components/game-week-header';
 
 const WEEKS_TO_SHOW = 2;
 
@@ -62,7 +62,7 @@ export function CallForChums(props: { handleError: (err: any) => void; }) {
                         .slice(0, WEEKS_TO_SHOW + 1)
                         .map(([week, courts]) => (
                             <React.Fragment key={week}>
-                                <h1 className="game-week">Game Week <span className="number">{week}</span></h1>
+                                <GameWeekHeader week={week} />
                                 <GameWeekTable courts={courts} />
                             </React.Fragment>
                         ))}
