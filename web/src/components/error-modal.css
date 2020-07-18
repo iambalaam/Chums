@@ -1,6 +1,6 @@
 #overlay {
     z-index: 1000;
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
@@ -10,7 +10,7 @@
 
 #modal {
     /* Sizing */
-    position: absolute;
+    position: fixed;
     z-index: 1001;
     left: 50%;
     top: 50%;
