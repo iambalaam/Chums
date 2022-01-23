@@ -14,6 +14,7 @@ if (environmentValues.includes(undefined)) {
   try {
     const textFile = await Deno.readTextFile(CREDENTIAL_PATH);
     const json = JSON.parse(textFile);
+    console.info("Found local credentials, applying overrides");
     for (const [key, val] of Object.entries(json)) {
       if (typeof (val) == "string") {
         Deno.env.set(key, val);
