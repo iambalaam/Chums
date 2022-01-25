@@ -1,10 +1,10 @@
 import * as React from "react";
+import { postJSON } from "../api";
 import "./login.css";
 
 export interface LoginProps {
   email: string;
   password: string;
-  error: string;
 }
 
 export function Login(props: LoginProps) {
@@ -12,14 +12,12 @@ export function Login(props: LoginProps) {
   const [email, setEmail] = React.useState(props.email ?? "");
   const [password, setPassword] = React.useState(props.password ?? "");
 
-  // Set initial text of our error message.
-  const [error, setError] = React.useState(props.error ?? "");
-
   // Specify what should happen when the user clicks the login button.
-  const loginHandler = (e: React.FormEvent<HTMLFormElement>) => {
+  const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    Login({ email, password, error });
+    const result = await postJSON("login", { email, password });
+    console.log(`Login request returned: `, result);
   };
 
   return (
@@ -27,6 +25,7 @@ export function Login(props: LoginProps) {
       <div className="email">
         <label htmlFor="email">Email:</label>
         <input
+          required
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -38,6 +37,7 @@ export function Login(props: LoginProps) {
       <div className="password">
         <label htmlFor="password">Password:</label>
         <input
+          required
           type="password"
           name="password"
           id="password"

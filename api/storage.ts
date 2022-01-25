@@ -10,6 +10,13 @@ interface EmailHashItem {
   Item: { email: string; hash: string };
 }
 
+// export async function getItem<T>(table: string, key:string, value: string): Promise<T> {
+//   return await denamo.getItem({
+//     TableName: table,
+//     Key: { [key]: value}
+//   }) as T;
+// }
+
 export async function getPasswordHash(email: string): Promise<string> {
   const doc = await denamo.getItem({
     TableName: "passwords",

@@ -13,7 +13,6 @@ export function App() {
         <Login
           email={"keith"}
           password={"123"}
-          error={"err"}
         />
       </div>
     </div>

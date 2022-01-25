@@ -4,9 +4,13 @@ const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 const { resolve } = require('path');
 const { readFileSync } = require('fs');
+const webpack = require('webpack');
 const htmlTemplate = readFileSync(resolve(__dirname, 'index.html')).toString();
 
 if (!process.env['NODE_ENV']) throw new Error('Please set NODE_ENV');
+const localDeno = true;
+const LOCAL_DENO = 'http://localhost:8000';
+const PROD_DENO = 'https://chumstennis.net';
 
 module.exports = {
     mode: process.env['NODE_ENV'],
@@ -40,6 +44,11 @@ module.exports = {
             templateContent: htmlTemplate,
             inject: true
         }),
+        new webpack.DefinePlugin({
+            __ENDPOINT__: localDeno 
+            ? JSON.stringify(LOCAL_DENO) 
+            : JSON.stringify(PROD_DENO)
+        })
         // new BundleAnalyzerPlugin()
     ]
 };
