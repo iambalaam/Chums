@@ -1,0 +1,31 @@
+{
+  "info": {
+    "_postman_id": "2d11898d-e857-4d0b-96bc-49cb54a8e1a7",
+    "name": "Chums",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "setPassword",
+      "_postman_id": "1b518eaf-d447-4715-baf4-f7432d8056c9",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"guy@test.com\",\r\n    \"password\": \"testing123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{deno_server}}/setPassword"
+      },
+      "response": []
+    }
+  ]
+}
