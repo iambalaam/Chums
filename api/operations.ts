@@ -1,16 +1,11 @@
 import { getPasswordHash, setPasswordHash } from "./storage.ts";
 import { comparePassword, hashPassword, parseJsonRequest } from "./util.ts";
 
-const corsResponse = (obj: object) =>
-  new Response(
-    JSON.stringify(obj),
-    {
-      headers: {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
-    },
-  );
+function jsonResponse(obj: Record<string, unknown>): Response {
+  return new Response(JSON.stringify(obj), {
+    headers: { "Content-Type": "application/json" },
+  });
+}
 
 export async function setPassword(req: Request) {
   const json = await parseJsonRequest(req);
@@ -21,39 +16,21 @@ export async function setPassword(req: Request) {
   if (email && password) {
     const hash = hashPassword(password);
     await setPasswordHash(email, hash);
-    return corsResponse({ status: "ok" });
+    return jsonResponse({ status: "ok" });
   }
-  return corsResponse({ status: "error" });
+  return jsonResponse({ status: "error" });
 }
 
 export async function login(req: Request) {
-  if (req.method === "OPTIONS") {
-    return corsResponse({ status: "ok" });
-  }
-
   const json = await parseJsonRequest(req);
 
-  // Did the request succeed?
-  // if (!json) return corsResponse("error"); // Make a quick exit.
-  if (!json) {
-    return corsResponse({ status: "error" });
-  }
+  // Validate required parameters
+  const { email, password } = json || {};
+  if (!email) throw new Error("body.email must be present");
+  if (!password) throw new Error("body.password must be present");
 
-  // Get our required parameters.
-  const { email, password } = json;
+  const dbHash = await getPasswordHash(email);
+  const equal = comparePassword(password, dbHash);
 
-  // It takes two.
-  if (email && password) {
-    // If this is a valid login then the password will match the hash in the database.
-    const dbHash = await getPasswordHash(email);
-    console.log(dbHash);
-
-    // Is it a match?
-    if (comparePassword(password, dbHash)) {
-      return corsResponse({ valid: true, password, dbHash });
-    }
-  }
-
-  // Invalid login attempt.
-  return corsResponse({ status: "error" });
+  return jsonResponse({ status: equal ? "ok" : "error" });
 }
