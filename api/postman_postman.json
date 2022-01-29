@@ -23,7 +23,7 @@
             }
           }
         },
-        "url": "{{deno_server}}/api/setPasswords"
+        "url": "{{deno_server}}/api/setPassword"
       },
       "response": []
     },
