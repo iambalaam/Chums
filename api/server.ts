@@ -7,16 +7,20 @@ import {
 import { logger } from "https://deno.land/x/url_router@0.1.1/middlewares/logger.ts";
 import * as op from "./operations.ts";
 
+const corsHeaders: Record<string, string> = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "*",
+};
 async function addHeaders(value: unknown, next: Next) {
   const response = await next(value) as Response;
+  const headers = { ...corsHeaders };
+  response.headers.forEach((value, name) => {
+    headers[name] = value;
+  });
   const corsResponse = new Response(
     response.body,
     {
-      headers: {
-        ...response.headers,
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Headers": "*",
-      },
+      headers,
       status: response.status,
       statusText: response.statusText,
     },

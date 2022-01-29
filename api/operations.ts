@@ -1,9 +1,21 @@
-import { getPasswordHash, setPasswordHash } from "./storage.ts";
+import {
+  createAuthToken,
+  getPasswordHash,
+  setPasswordHash,
+} from "./storage.ts";
 import { comparePassword, hashPassword, parseJsonRequest } from "./util.ts";
 
-function jsonResponse(obj: Record<string, unknown>): Response {
+const YEAR_IN_SECS = 60 * 60 * 24 * 365;
+
+function jsonResponse(
+  obj: Record<string, unknown>,
+  headers: Record<string, string> = {},
+): Response {
   return new Response(JSON.stringify(obj), {
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      ...headers,
+      "Content-Type": "application/json",
+    },
   });
 }
 
@@ -32,5 +44,10 @@ export async function login(req: Request) {
   const dbHash = await getPasswordHash(email);
   const equal = comparePassword(password, dbHash);
 
-  return jsonResponse({ status: equal ? "ok" : "error" });
+  const token = await createAuthToken(email);
+
+  return jsonResponse(
+    { status: equal ? "ok" : "error" },
+    { "Set-Cookie": `token=${token}; Max-Age=${YEAR_IN_SECS}` },
+  );
 }
