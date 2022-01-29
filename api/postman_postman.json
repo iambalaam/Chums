@@ -1,0 +1,53 @@
+{
+  "info": {
+    "_postman_id": "db006bc4-a063-4925-9ef1-f60554065153",
+    "name": "Chums",
+    "schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "setPassword",
+      "id": "dce93b9b-af2e-4b86-ad6b-a14f0cf38c31",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"guy@test.com\",\r\n    \"password\": \"testing123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{deno_server}}/api/setPasswords"
+      },
+      "response": []
+    },
+    {
+      "name": "Login",
+      "id": "7b094a5b-6f26-4ed7-969f-8936c9e2e5c7",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"guy@test.com\",\r\n    \"password\": \"testing123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": "{{deno_server}}/api/login"
+      },
+      "response": []
+    }
+  ]
+}
