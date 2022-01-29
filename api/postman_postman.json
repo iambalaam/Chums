@@ -45,7 +45,7 @@
             }
           }
         },
-        "url": "{{deno_server}}/api/logins"
+        "url": "{{deno_server}}/api/login"
       },
       "response": []
     }
