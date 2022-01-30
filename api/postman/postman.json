@@ -48,6 +48,19 @@
         "url": "{{deno_server}}/api/login"
       },
       "response": []
+    },
+    {
+      "name": "New Request",
+      "id": "57ca1e9c-c787-4a13-a330-6f099b3221b4",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": null
+      },
+      "response": []
     }
   ]
 }
