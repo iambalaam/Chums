@@ -50,15 +50,30 @@
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "test-auth",
       "id": "57ca1e9c-c787-4a13-a330-6f099b3221b4",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
       },
       "request": {
-        "method": "GET",
+        "method": "POST",
         "header": [],
-        "url": null
+        "url": {
+          "raw": "{{deno_server}}/api/test-auth?token=bf4f63ba-d5af-494a-9c8f-a6fcb1983ad0",
+          "host": [
+            "{{deno_server}}"
+          ],
+          "path": [
+            "api",
+            "test-auth"
+          ],
+          "query": [
+            {
+              "key": "token",
+              "value": "bf4f63ba-d5af-494a-9c8f-a6fcb1983ad0"
+            }
+          ]
+        }
       },
       "response": []
     }
