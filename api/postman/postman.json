@@ -50,7 +50,7 @@
       "response": []
     },
     {
-      "name": "New Request",
+      "name": "test-auth",
       "id": "57ca1e9c-c787-4a13-a330-6f099b3221b4",
       "protocolProfileBehavior": {
         "disableBodyPruning": true
