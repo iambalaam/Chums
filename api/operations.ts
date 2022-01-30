@@ -47,10 +47,15 @@ export async function login(req: Request) {
   const dbHash = await getPasswordHash(email);
   const equal = comparePassword(password, dbHash);
 
-  const token = await createAuthToken(email);
-
-  return jsonResponse(
-    { status: equal ? "ok" : "error" },
-    setTokenCookie(token),
-  );
+  if (equal) {
+    const token = await createAuthToken(email);
+    return jsonResponse(
+      { token },
+      setTokenCookie(token),
+    );
+  } else {
+    return jsonResponse(
+      { status: "error" },
+    );
+  }
 }
