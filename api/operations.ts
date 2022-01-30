@@ -3,9 +3,12 @@ import {
   getPasswordHash,
   setPasswordHash,
 } from "./storage.ts";
-import { comparePassword, hashPassword, parseJsonRequest } from "./util.ts";
-
-const YEAR_IN_SECS = 60 * 60 * 24 * 365;
+import {
+  comparePassword,
+  hashPassword,
+  parseJsonRequest,
+  setTokenCookie,
+} from "./util.ts";
 
 function jsonResponse(
   obj: Record<string, unknown>,
@@ -48,6 +51,6 @@ export async function login(req: Request) {
 
   return jsonResponse(
     { status: equal ? "ok" : "error" },
-    { "Set-Cookie": `token=${token}; Max-Age=${YEAR_IN_SECS}` },
+    setTokenCookie(token),
   );
 }
