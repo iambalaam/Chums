@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {},
   "scripts": {
+    "test": "echo \"no unit tests\"",
     "start": "cross-env NODE_ENV=development webpack-dev-server --config web/webpack.config.js",
     "clean:static": "mkdirp static && rimraf static/*",
     "copy:dist": "copyfiles web/dist/* static",

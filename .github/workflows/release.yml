@@ -1,0 +1,38 @@
+name: release
+
+on:
+  push:
+    branches:
+      - deploy
+      - debug-github-actions
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      # Test + Build
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12
+      - name: install
+        run: |
+          npm install -g yarn
+          yarn install
+      - name: test
+        run: yarn test
+      - name: build
+        run: yarn build
+
+      # Upload build artifacts
+      - uses: actions/checkout@master
+      - uses: jakejarvis/s3-sync-action@master
+        with:
+          args: --acl public-read --follow-symlinks --delete
+        env:
+          AWS_S3_BUCKET: chums-tennis-dist
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: "eu-west-2"
+          SOURCE_DIR: "dist"
+          DEST_DIR: ${{ github.sha }}
