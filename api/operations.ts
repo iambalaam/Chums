@@ -22,19 +22,19 @@ function jsonResponse(
   });
 }
 
-export async function setPassword(req: Request) {
-  const json = await parseJsonRequest(req);
-
-  // Temporary functionality
-  const email: string = json.email;
-  const password: string = json.password;
-  if (email && password) {
-    const hash = hashPassword(password);
-    await setPasswordHash(email, hash);
-    return jsonResponse({ status: "ok" });
-  }
-  return jsonResponse({ status: "error" });
-}
+// Debug functionality
+// export async function setPassword(req: Request) {
+//   const json = await parseJsonRequest(req);
+//
+//   const email: string = json.email;
+//   const password: string = json.password;
+//   if (email && password) {
+//     const hash = hashPassword(password);
+//     await setPasswordHash(email, hash);
+//     return jsonResponse({ status: "ok" });
+//   }
+//   return jsonResponse({ status: "error" });
+// }
 
 export async function login(req: Request) {
   const json = await parseJsonRequest(req);

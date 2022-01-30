@@ -27,10 +27,6 @@ const noAuthMW = [logger, addCorsHeaders];
 const routes: Routes = [
   [new URLPattern({ pathname: "/api/test-auth" }), [...authMW, test]],
   [new URLPattern({ pathname: "/api/login" }), [...noAuthMW, op.login]],
-  [new URLPattern({ pathname: "/api/setPassword" }), [
-    ...noAuthMW,
-    op.setPassword,
-  ]],
   [new URLPattern({ pathname: "*" }), [
     logger,
     () => new Response("404", { status: 404 }),
