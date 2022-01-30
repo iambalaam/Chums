@@ -10,10 +10,7 @@ export function App() {
       <Nav />
       <div className="container">
         {/* <Loading /> */}
-        <Login
-          email={"keith"}
-          password={"123"}
-        />
+        <Login />
       </div>
     </div>
   );

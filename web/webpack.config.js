@@ -20,7 +20,10 @@ module.exports = {
         filename: 'bundle.js'
     },
     devServer: {
-        contentBase: resolve(__dirname, 'dist')
+        contentBase: resolve(__dirname, 'dist'),
+        proxy: {
+            '/api': LOCAL_DENO,
+        },
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js']
@@ -46,7 +49,7 @@ module.exports = {
         }),
         new webpack.DefinePlugin({
             __ENDPOINT__: localDeno 
-            ? JSON.stringify(LOCAL_DENO) 
+            ? JSON.stringify('') 
             : JSON.stringify(PROD_DENO)
         })
         // new BundleAnalyzerPlugin()

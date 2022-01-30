@@ -2,21 +2,20 @@ import * as React from "react";
 import { postJSON } from "../api";
 import "./login.css";
 
-export interface LoginProps {
-  email: string;
-  password: string;
-}
-
-export function Login(props: LoginProps) {
+export function Login() {
   // Set initial values for the email address & password.
-  const [email, setEmail] = React.useState(props.email ?? "");
-  const [password, setPassword] = React.useState(props.password ?? "");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   // Specify what should happen when the user clicks the login button.
   const loginHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const result = await postJSON("login", { email, password });
+
+    if (result.token) {
+      document.cookie = `token=${result.token}; max-age=31536000`;
+    }
     console.log(`Login request returned: `, result);
   };
 
