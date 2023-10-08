@@ -1,5 +1,9 @@
 import { AppProps } from "$fresh/server.ts";
 
+// /routes/_app.tsx
+// Default app wrapper
+// Useful to write to <head />
+
 export default function App({ Component }: AppProps) {
   return (
     <html>
