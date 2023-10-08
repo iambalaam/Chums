@@ -4,6 +4,7 @@
   box-sizing: border-box;
 }
 * {
+  font-family: Arial, Helvetica, sans-serif;
   margin: 0;
 }
 
@@ -11,4 +12,87 @@ code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   font-size: 1em;
+}
+
+
+nav{
+  position: fixed;
+  z-index: 100;
+  width: 100%;
+  color: white;
+  height: 60px;
+  background-color: #05b384;
+  padding: 10px;
+  line-height: 40px;
+  font-size: 40px;
+  box-shadow: 0 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+.loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.ball {
+    margin: auto;
+    animation: spin 3s linear infinite;
+    position: relative;
+    width: 150px;
+    height: 150px;
+    background-color: #ffd166;
+    border-radius: 75px;
+    overflow: hidden;
+}
+
+.ball::before {
+    position: absolute;
+    box-sizing: content-box;
+    top: -30%;
+    left: -30%;
+    content: "";
+    width: 100px;
+    height: 100px;
+    border: 8px solid white;
+    border-radius: 58px;
+}
+
+.ball::after {
+    position: absolute;
+    box-sizing: content-box;
+    bottom: -30%;
+    right: -30%;
+    content: "";
+    width: 100px;
+    height: 100px;
+    border: 8px solid white;
+    border-radius: 58px;
+}
+
+/* Smaller size */
+.small.ball {
+    width: 30px;
+    height: 30px;
+    border-radius: 15px;
+}
+.small.ball::before {
+    width: 20;
+    height: 20px;
+    border-width: 2px;
+    border-radius: 22px;
+}
+.small.ball::after {
+    width: 20;
+    height: 20px;
+    border-width: 2px;
+    border-radius: 22px;
 }
