@@ -1,5 +1,5 @@
 import { Handlers } from "$fresh/server.ts";
-import { addMember, getMember } from "../../storage.ts";
+import { addMember, getMember } from "../../storage/members.ts";
 
 export const handler: Handlers = {
   async GET(req) {

@@ -1,9 +1,10 @@
 /// <reference lib="deno.unstable" />
 
-import { Member } from "./schema.ts";
+import { Member } from "../schema.ts";
+
+const DB = Deno.env.get("KV_PREFIX") || "test";
 
 const kv = await Deno.openKv();
-const DB = "chums";
 const MEMBERS_TABLE = "members";
 
 export async function addMember(member: Omit<Member, "id">) {
