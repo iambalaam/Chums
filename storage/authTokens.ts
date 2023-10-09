@@ -12,9 +12,9 @@ export async function getAuthToken(id: string) {
   return authToken;
 }
 
-export async function createAuthToken(token: AuthToken) {
+export async function createAuthToken(token: Omit<AuthToken, "id">) {
   const uuid = crypto.randomUUID();
-  await kv.set([DB, AUTH_TOKENS_TABLE, uuid], token);
+  await kv.set([DB, AUTH_TOKENS_TABLE, uuid], { ...token, id: uuid });
   return uuid;
 }
 
@@ -23,6 +23,6 @@ export async function authenticateToken(id: string) {
   if (!token) return;
   const now = new Date();
   const expiry = new Date(token.expiry);
-  if (now < expiry) return;
+  if (now > expiry) return;
   return await getMember(token.memberId);
 }
