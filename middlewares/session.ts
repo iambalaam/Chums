@@ -5,10 +5,7 @@ export default async function session(
   _req: Request,
   ctx: MiddlewareHandlerContext<ReqState>,
 ) {
-  if (!ctx.state.cookies) {
-    console.warn("No cookies present");
-    ctx.state.cookies = {};
-  }
+  if (!ctx.state.cookies) ctx.state.cookies = {};
   ctx.state.session = ctx.state.cookies.session || crypto.randomUUID();
 
   const response = await ctx.next();
