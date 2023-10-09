@@ -1,13 +1,11 @@
-import { MiddlewareHandlerContext } from "$fresh/server.ts";
+import cookieParser from "../middlewares/cookieParser.ts";
+import logger from "../middlewares/logger.ts";
+import login from "../middlewares/login.ts";
+import session from "../middlewares/session.ts";
 
-export async function handler(req: Request, ctx: MiddlewareHandlerContext) {
-  // time req
-  const before = Date.now();
-  const response = await ctx.next();
-  const after = Date.now();
-
-  console.log(
-    `[${req.method}] ${new URL(req.url).pathname} (${after - before}ms)`,
-  );
-  return response;
-}
+export const handler = [
+  logger,
+  cookieParser,
+  session,
+  login,
+];
