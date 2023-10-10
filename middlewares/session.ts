@@ -1,5 +1,6 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { ReqState } from "./ReqState.ts";
+import { addSetCookie } from "./cookieParser.ts";
 
 export default async function session(
   _req: Request,
@@ -9,11 +10,7 @@ export default async function session(
   ctx.state.session = ctx.state.cookies.session || crypto.randomUUID();
 
   const response = await ctx.next();
-  const setCookies = response.headers.get("Set-Cookie") || "";
-  response.headers.set(
-    "Set-Cookie",
-    `session=${ctx.state.session};  ${setCookies}`,
-  );
+  addSetCookie(response, "session", ctx.state.session);
 
   return response;
 }

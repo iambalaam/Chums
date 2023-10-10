@@ -10,6 +10,7 @@ import * as $4 from "./routes/api/admin/_middleware.ts";
 import * as $5 from "./routes/api/admin/auth-token.ts";
 import * as $6 from "./routes/api/member.ts";
 import * as $7 from "./routes/index.tsx";
+import * as $8 from "./routes/whoami.tsx";
 import * as $$0 from "./islands/Counter.tsx";
 
 const manifest = {
@@ -22,6 +23,7 @@ const manifest = {
     "./routes/api/admin/auth-token.ts": $5,
     "./routes/api/member.ts": $6,
     "./routes/index.tsx": $7,
+    "./routes/whoami.tsx": $8,
   },
   islands: {
     "./islands/Counter.tsx": $$0,

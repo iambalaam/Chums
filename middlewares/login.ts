@@ -1,6 +1,7 @@
 import { MiddlewareHandlerContext } from "$fresh/server.ts";
 import { authenticateToken } from "../storage/authTokens.ts";
 import { ReqState } from "./ReqState.ts";
+import { addSetCookie } from "./cookieParser.ts";
 
 export default async function login(
   req: Request,
@@ -13,8 +14,18 @@ export default async function login(
 
   if (token) {
     const member = await authenticateToken(token);
-    if (member) ctx.state.member = member;
+    if (member) {
+      ctx.state.member = member;
+    }
   }
 
-  return await ctx.next();
+  const response = await ctx.next();
+
+  if (token) {
+    const aMonthAway = new Date();
+    aMonthAway.setMonth(aMonthAway.getMonth() + 1);
+    addSetCookie(response, "token", token, aMonthAway);
+  }
+
+  return response;
 }

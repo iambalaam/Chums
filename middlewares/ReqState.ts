@@ -3,6 +3,6 @@ import { Cookies } from "./cookieParser.ts";
 
 export interface ReqState {
   cookies: Cookies;
-  member: Member;
+  member?: Member;
   session: string;
 }

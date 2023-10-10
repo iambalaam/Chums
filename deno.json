@@ -3,9 +3,11 @@
   "tasks": {
     "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
     "start": "deno run --unstable -A --watch=static/,routes/ dev.ts",
+    "debug": "deno run --unstable -A --inspect-brk dev.ts",
     "build": "deno run -A dev.ts build",
     "preview": "deno run --unstable -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update ."
+    "update": "deno run -A -r https://fresh.deno.dev/update .",
+    "admin:generateAuth": "ENV=production deno run --unstable -A scripts/admin/generateAuth.ts"
   },
   "lint": {
     "rules": {

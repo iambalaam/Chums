@@ -20,3 +20,17 @@ export default async function cookieParser(
   }
   return await ctx.next();
 }
+
+export function addSetCookie(
+  response: Response,
+  key: string,
+  value: string,
+  expiry?: Date,
+) {
+  response && response.headers.append(
+    "Set-Cookie",
+    expiry
+      ? `${key}=${value}; SameSite=Strict; Expires=${expiry.toString()}`
+      : `${key}=${value}; SameSite=Strict`,
+  );
+}
