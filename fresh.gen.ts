@@ -6,11 +6,12 @@ import * as $0 from "./routes/_404.tsx";
 import * as $1 from "./routes/_500.tsx";
 import * as $2 from "./routes/_app.tsx";
 import * as $3 from "./routes/_middleware.ts";
-import * as $4 from "./routes/api/admin/_middleware.ts";
-import * as $5 from "./routes/api/admin/auth-token.ts";
-import * as $6 from "./routes/api/member.ts";
-import * as $7 from "./routes/index.tsx";
-import * as $8 from "./routes/whoami.tsx";
+import * as $4 from "./routes/admin/members.tsx";
+import * as $5 from "./routes/api/admin/_middleware.ts";
+import * as $6 from "./routes/api/admin/auth-token.ts";
+import * as $7 from "./routes/api/member.ts";
+import * as $8 from "./routes/index.tsx";
+import * as $9 from "./routes/whoami.tsx";
 import * as $$0 from "./islands/Counter.tsx";
 
 const manifest = {
@@ -19,11 +20,12 @@ const manifest = {
     "./routes/_500.tsx": $1,
     "./routes/_app.tsx": $2,
     "./routes/_middleware.ts": $3,
-    "./routes/api/admin/_middleware.ts": $4,
-    "./routes/api/admin/auth-token.ts": $5,
-    "./routes/api/member.ts": $6,
-    "./routes/index.tsx": $7,
-    "./routes/whoami.tsx": $8,
+    "./routes/admin/members.tsx": $4,
+    "./routes/api/admin/_middleware.ts": $5,
+    "./routes/api/admin/auth-token.ts": $6,
+    "./routes/api/member.ts": $7,
+    "./routes/index.tsx": $8,
+    "./routes/whoami.tsx": $9,
   },
   islands: {
     "./islands/Counter.tsx": $$0,

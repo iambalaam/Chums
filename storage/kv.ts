@@ -18,4 +18,7 @@ export const kv = {
   async get(key: string[]) {
     return await DB.get([prefix, ...key]);
   },
+  async list(key: string[]) {
+    return await DB.list({ prefix: [prefix, ...key] });
+  },
 };
