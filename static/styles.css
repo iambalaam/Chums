@@ -8,6 +8,11 @@
   margin: 0;
 }
 
+a {
+  color: unset;
+  text-decoration: unset;
+}
+
 code {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
@@ -25,6 +30,10 @@ nav{
   line-height: 40px;
   font-size: 40px;
   box-shadow: 0 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
 }
 
 @keyframes spin {
